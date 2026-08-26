@@ -19,4 +19,11 @@ The default visuals are generic template artwork. They do not use a previous cus
 - `public/minting.svg` is an original animated SVG created for this repository. Its rotating orbits, floating crystal, glow and particles honor `prefers-reduced-motion`.
 - `public/icon.svg` is an original generic vector icon created for this repository.
 
+## Documentation screenshots
+
+- `docs/screenshots/site-overview.png` is rendered from the real Chakra/React mint-page components with generic documentation values.
+- `docs/screenshots/minting-progress.png` is rendered from the real `NFTRevealModal` mint-progress state.
+
+No wallet was connected and no blockchain transaction was signed or submitted while producing these screenshots. Displayed supply, balance, address and price values are illustrative.
+
 When replacing any asset, record its creator, source, license or generation method here and confirm that its rights permit the intended public and commercial distribution.

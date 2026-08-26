@@ -1,6 +1,27 @@
 # Environment configuration
 
-Copy `.env.example` to an ignored `.env.local` for development. In production, configure the same values in the hosting platform.
+## Which environment file should I use?
+
+| File | Purpose | Commit it? |
+| --- | --- | --- |
+| `.env.example` | Complete reference and local-development template. | Yes; placeholders only. |
+| `.env.local` | Your real local values; Next.js loads it during `npm run dev`. | Never. |
+| `.env.vercel.example` | Production-runtime template containing only variables needed by Vercel. | Yes; placeholders only. |
+| `.env.vercel` | Your completed file for Vercel dashboard import. Next.js does not use it automatically. | Never. |
+
+For local development:
+
+```bash
+cp .env.example .env.local
+```
+
+For Vercel:
+
+```bash
+cp .env.vercel.example .env.vercel
+```
+
+Replace every placeholder before importing it. Do not rename a secret with a `NEXT_PUBLIC_` prefix. The exact dashboard and CLI procedures are in [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 Every variable beginning with `NEXT_PUBLIC_` is embedded into browser JavaScript at build time. It is public even when entered through Vercel. `RPC_URL`, signer secrets, and authority paths are server-only and must never use that prefix.
 

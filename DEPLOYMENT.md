@@ -1,13 +1,52 @@
 # Deployment
 
-## Vercel
+Use Vercel's current [Environment Variables documentation](https://vercel.com/docs/environment-variables) and [`vercel env` CLI reference](https://vercel.com/docs/cli/env) as the platform source of truth.
 
-1. Push this repository to a private GitHub repository first.
-2. Import it into Vercel as a Next.js project.
-3. Keep the default install command `npm ci` and build command `npm run build`.
-4. Add the public and server-only variables listed below to the Production environment.
-5. Deploy, test the generated Vercel URL, then attach the custom domain.
-6. Update `NEXT_PUBLIC_SITE_URL`, `RPC_ALLOWED_ORIGINS`, and `MINT_ALLOWED_ORIGINS` to the final HTTPS origin and redeploy.
+## Environment files
+
+- `.env.example` is the complete local/reference template.
+- `.env.local` contains real local-development values and is ignored by Git.
+- `.env.vercel.example` contains only production runtime variables needed by Vercel.
+- `.env.vercel` is the completed, ignored file you may import into Vercel.
+
+Create the production import file:
+
+```bash
+cp .env.vercel.example .env.vercel
+```
+
+Replace every `YOUR_*` value, set the final HTTPS domain in `NEXT_PUBLIC_SITE_URL`, `RPC_ALLOWED_ORIGINS`, and `MINT_ALLOWED_ORIGINS`, and add the signer secret only when an effective `thirdPartySigner` Guard requires it. Never commit `.env.vercel`.
+
+## Vercel dashboard deployment
+
+1. In Vercel choose **Add New → Project** and import the GitHub repository.
+2. Keep the detected framework as **Next.js**, install command `npm ci`, and build command `npm run build`.
+3. Open **Project Settings → Environment Variables**.
+4. Use the `.env` import/paste control and select the completed `.env.vercel` file from your machine.
+5. Apply the variables to **Production**. Add a separate safe set for **Preview** if preview deployments should work.
+6. Confirm that `RPC_URL` and `THIRD_PARTY_SIGNER_SECRET_KEY` do not begin with `NEXT_PUBLIC_`.
+7. Deploy, attach the custom domain, update the three origin/site URL values to that final domain, and redeploy.
+
+Git and Vercel do not automatically upload `.env.local` or `.env.vercel`. Vercel applies variable changes only to new deployments, so redeploy after every change.
+
+## Vercel CLI alternative
+
+After installing the Vercel CLI:
+
+```bash
+vercel link
+vercel env add RPC_URL production --sensitive
+vercel env ls production
+vercel deploy --prod
+```
+
+Use `vercel env add VARIABLE production` for the remaining values. To download Development-scoped variables later, run:
+
+```bash
+vercel env pull .env.local
+```
+
+This direction is important: `vercel env pull` downloads values from Vercel; it does not upload `.env.local`.
 
 `NEXT_PUBLIC_*` variables are compiled during the build. Changing one requires a new deployment.
 
@@ -43,7 +82,7 @@ MINT_MAX_COMPUTE_UNITS=1400000
 MINT_MAX_PRIORITY_FEE_MICROLAMPORTS=100000
 ```
 
-Do not import a production secret file into Vercel from a public or shared location. Enter secrets directly through Vercel or its approved secret-management integration.
+Import `.env.vercel` only from your protected local machine. For stricter secret handling, omit secrets from the file and add them separately as sensitive values through the Vercel dashboard or CLI.
 
 ## Origin rules
 
@@ -97,7 +136,7 @@ npm run security:audit
 npm run build
 ```
 
-Confirm that only `.env.example` is tracked and no wallet/keypair/cache/snapshot files appear in `git ls-files`.
+Confirm that only `.env.example` and `.env.vercel.example` are tracked and no completed environment file, wallet, keypair, cache, or snapshot appears in `git ls-files`.
 
 ## Rollback
 

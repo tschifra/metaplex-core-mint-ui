@@ -19,7 +19,7 @@ The server sends the signed transaction directly and never returns a reusable si
 
 ## Secrets
 
-- Never commit `.env`, `.env*.local`, `wallet.json`, keypair files, Guard snapshots, or Vercel state.
+- Never commit `.env`, `.env*.local`, `.env.vercel`, `wallet.json`, keypair files, Guard snapshots, or Vercel state. Only placeholder templates such as `.env.example` and `.env.vercel.example` may be tracked.
 - Never put RPC credentials or key material in `NEXT_PUBLIC_*` variables.
 - Use a dedicated third-party signer with no authority or treasury role.
 - Store production secrets in Vercel or an approved secret manager.

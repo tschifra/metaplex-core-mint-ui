@@ -28,13 +28,13 @@ yarn-error.log*
 # All real environment files stay local or in the hosting platform.
 .env*
 !.env.example
+!.env.vercel.example
 wallet.json
 id.json
 *.wallet.json
 *.keypair.json
 *.secret.json
 .guard-snapshots/
-vercel.production.env
 
 # MPLX CLI state belongs in a separate collection workspace.
 asset-cache.json

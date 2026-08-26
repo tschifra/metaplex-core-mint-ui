@@ -4,22 +4,13 @@ A production-oriented, configurable mint website for **Metaplex Core Candy Machi
 
 This is a community project and is not an official Metaplex product.
 
-## Visual preview
+## UI preview
 
-<table>
-  <tr>
-    <th>Default collection artwork</th>
-    <th>Animated mint progress</th>
-  </tr>
-  <tr>
-    <td><img src="./public/hero.webp" alt="A luminous crystalline digital asset above a mint portal" width="480" /></td>
-    <td><img src="./public/minting.svg" alt="Animated crystalline Core asset mint progress artwork" width="360" /></td>
-  </tr>
-</table>
+![Generic Core Mint UI mint page](./docs/screenshots/site-overview.png)
 
-![Wide Core Mint UI social preview](./public/social-preview.webp)
+![Core Mint UI transaction progress modal](./docs/screenshots/minting-progress.png)
 
-These neutral defaults are intended to be replaced for each collection. Their source and generation notes are recorded in [ASSET_PROVENANCE.md](./ASSET_PROVENANCE.md).
+These screenshots use the actual UI components with safe documentation values. They do not show a real wallet or submitted transaction. The neutral artwork is intended to be replaced for each collection; its source and generation notes are recorded in [ASSET_PROVENANCE.md](./ASSET_PROVENANCE.md).
 
 ## Before you start
 
@@ -157,6 +148,8 @@ npm run guard:check
 ## Deployment
 
 Vercel is supported, including Hobby deployments. Import the repository, set all required environment variables in Vercel, and redeploy whenever a `NEXT_PUBLIC_*` value changes. Public variables are visible in browser JavaScript; secrets must never use the `NEXT_PUBLIC_` prefix.
+
+Use `.env.local` for local development. For Vercel, copy `.env.vercel.example` to the ignored `.env.vercel`, enter production values, and import that file under **Project Settings → Environment Variables**. Local environment files are never uploaded by Git.
 
 The browser communicates with the same-origin `/api/rpc` proxy. Production origin checks, method allowlists, size limits, weighted rate limiting, transaction validation, and signer health checks are included. Instance-local rate limits are best-effort on serverless platforms; also configure quotas at your RPC provider or platform firewall.
 
