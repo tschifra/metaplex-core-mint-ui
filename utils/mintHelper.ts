@@ -38,7 +38,6 @@ import {
   setComputeUnitPrice,
   setComputeUnitLimit,
   transferSol,
-  addMemo,
 } from "@metaplex-foundation/mpl-toolbox";
 import { toWeb3JsTransaction } from "@metaplex-foundation/umi-web3js-adapters";
 import {
@@ -51,6 +50,8 @@ import {
   coreAssetMatchesCollection,
   validateCoreAssetSelections,
 } from "./coreAssetSelection";
+import { getMintableGuardGroup } from "./guardResolution";
+import { parsePriorityFeeMicroLamports } from "./mintUiConfig";
 
 export interface GuardButtonList extends GuardReturn {
   header: string;
@@ -66,22 +67,8 @@ export const chooseGuardToUse = (
   guard: GuardReturn,
   candyGuard: CandyGuard
 ) => {
-  const guardGroup = candyGuard?.groups.find(
-    (item) => item.label === guard.label
-  );
-  if (guardGroup) {
-    return guardGroup;
-  }
-
-  if (candyGuard != null) {
-    return {
-      label: "default",
-      guards: candyGuard.guards,
-    };
-  }
-
-  return {
-    label: "default",
+  return getMintableGuardGroup(candyGuard, guard.label) ?? {
+    label: guard.label,
     guards: undefined,
   };
 };
@@ -524,7 +511,7 @@ export const buildTx = (
   tx = tx.prepend(setComputeUnitLimit(umi, { units }));
   tx = tx.prepend(
     setComputeUnitPrice(umi, {
-      microLamports: parseInt(process.env.NEXT_PUBLIC_MICROLAMPORTS ?? "1001"),
+      microLamports: parsePriorityFeeMicroLamports(),
     })
   );
   tx = tx.setAddressLookupTables(luts);
@@ -546,8 +533,7 @@ export const buildTxs = async (
   mintArgsArray: Partial<DefaultGuardSetMintArgs>[] | undefined,
   luts: AddressLookupTableInput[],
   latestBlockhash: string,
-  buyBeer: boolean,
-  authorizationMemos?: string[]
+  buyBeer: boolean
 ) => {
   const transactions: { transaction: Transaction; signers: Signer[] }[] = [];
 
@@ -555,18 +541,15 @@ export const buildTxs = async (
     // Build fresh transactions with the server-approved maximum. The backend
     // simulates the exact fully signed transaction before broadcasting it, so a
     // separate unsigned client simulation only adds latency and RPC load.
-    const microLamports = parseInt(process.env.NEXT_PUBLIC_MICROLAMPORTS ?? "1001");
+    const microLamports = parsePriorityFeeMicroLamports();
     let builder = transactionBuilder()
       .prepend(setComputeUnitPrice(umi, { microLamports }))
       .prepend(setComputeUnitLimit(umi, { units: 1400000 }))
       .setBlockhash(latestBlockhash);
 
-    // A short-lived, payer-bound memo prevents a signed mint from being held
-    // for most of the recent-blockhash window before it reaches the backend.
-    if (authorizationMemos?.[i]) {
-      builder = builder.add(addMemo(umi, { memo: authorizationMemos[i] }));
-    }
-
+    // Do not add a Memo instruction here. Candy Guard's
+    // botTax.lastInstruction=true validates a fixed program allowlist that does
+    // not include the Memo program and would tax the buyer instead of minting.
     // Add the optional project-support transfer once per mint transaction.
     if (buyBeer) {
       builder = builder.add(

@@ -99,7 +99,7 @@ Use an `allowList` Guard only for a presale or another phase restricted to appro
 If your Guard uses `allowList`:
 
 1. Add wallet addresses to [allowlist.tsx](./allowlist.tsx).
-2. Use a map key that exactly matches the on-chain Guard group label, or `default`.
+2. Use a map key that exactly matches the on-chain Guard group label. Use `default` only when the Guard has no named groups.
 3. Configure the on-chain Guard with the Merkle root generated from the same list.
 4. Rebuild and deploy the UI.
 5. Test the proof route on devnet.
@@ -124,7 +124,7 @@ THIRD_PARTY_SIGNER_SECRET_KEY=
 THIRD_PARTY_SIGNER_KEYPAIR_PATH=/absolute/path/to/signer.json
 ```
 
-The signer does not need SOL because the buyer is the transaction payer. Its public key must match the effective `thirdPartySigner` Guard for the default configuration and every mintable group.
+The signer does not need SOL because the buyer is the transaction payer. Its public key must match the effective `thirdPartySigner` Guard for every mintable selection: the default set when no groups exist, or every named group when groups exist.
 
 Audit without changing on-chain state:
 

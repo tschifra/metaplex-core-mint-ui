@@ -1,6 +1,6 @@
 # Candy Guard support
 
-The UI resolves the Core Candy Guard’s default set plus every named group. Unknown custom Guards are not supported automatically; they require a compatible Umi manifest, eligibility logic, mint arguments, account selection, and tests.
+The UI exposes the default set when no named groups exist. When groups exist, it exposes only those groups and resolves every group against its inherited default Guards. Unknown custom Guards are not supported automatically; they require a compatible Umi manifest, eligibility logic, mint arguments, account selection, and tests.
 
 ## Implemented paths
 
@@ -40,11 +40,11 @@ Custom on-chain Guards are unsupported until explicitly added to the client. A c
 
 ## Allowlists
 
-`allowlist.tsx` ships empty. The map key must exactly match a Guard group label or `default`. Its addresses must be the source used for the on-chain Merkle root. The UI sends the proof route when a proof account does not already exist.
+`allowlist.tsx` ships empty. The map key must exactly match a Guard group label; use `default` only when the Guard has no named groups. Its addresses must be the source used for the on-chain Merkle root. The UI sends the proof route when a proof account does not already exist.
 
 ## Groups and inheritance
 
-Default Guards are inherited by each group. A group-level Guard overrides the default Guard of the same type. The server health/audit path calculates effective `thirdPartySigner` values using the same inheritance rule.
+Default Guards are inherited by each group. A group-level Guard overrides the default Guard of the same type. Eligibility, displayed price and dates, mint arguments, asset selection, and the signer health path all use the same effective inherited Guard set. Once named groups exist, Candy Guard requires a group label and the default set is not directly mintable.
 
 Use `NEXT_PUBLIC_GUARD_SELECTION_MODE=all` for explicit phase selection. Use `best` only when automatic cheapest-group selection matches the intended sale semantics.
 

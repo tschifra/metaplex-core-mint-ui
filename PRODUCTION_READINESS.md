@@ -43,10 +43,10 @@
 - [ ] Dedicated signer stored only in secret management and has no unnecessary SOL/authority role.
 - [ ] Server reports `standby` before on-chain activation.
 - [ ] Dry-run output and exact Candy Guard address reviewed.
-- [ ] Default and every effective group use the expected signer.
+- [ ] Every mintable selection uses the expected signer: the default set when there are no groups, or every named group when groups exist.
 - [ ] Server reports `ready` after activation.
 - [ ] `GUARD_REQUIRE_THIRD_PARTY_SIGNER=true npm run guard:check` reports no unprotected mintable group.
-- [ ] Valid mint, invalid shape, stale memo, replay, wrong origin, wrong payer, and excessive fee tests pass.
+- [ ] Valid mint, invalid shape, expired blockhash, replay, bot-tax simulation, wrong origin, wrong payer, and excessive fee tests pass.
 - [ ] Rollback/rotation procedure and responsible operator are documented.
 
 ## Fairness and reveal

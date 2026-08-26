@@ -4,6 +4,8 @@ import {
   parseMaxMintAmount,
   parseMintProgressDurationMs,
   parseMultimintEnabled,
+  parseFallbackMintPrice,
+  parsePriorityFeeMicroLamports,
 } from "../utils/mintUiConfig";
 
 describe("mint UI configuration", () => {
@@ -40,5 +42,15 @@ describe("mint UI configuration", () => {
     expect(parseMintProgressDurationMs("15000")).toBe(15000);
     expect(parseMintProgressDurationMs("0")).toBe(0);
     expect(() => parseMintProgressDurationMs("60001")).toThrow("between 0 and 60000");
+  });
+
+  it("validates transaction fee and display-price values", () => {
+    expect(parsePriorityFeeMicroLamports(undefined)).toBe(1001);
+    expect(parsePriorityFeeMicroLamports("2500")).toBe(2500);
+    expect(() => parsePriorityFeeMicroLamports("NaN")).toThrow("integer between");
+    expect(() => parsePriorityFeeMicroLamports("10000001")).toThrow("integer between");
+    expect(parseFallbackMintPrice(undefined)).toBeUndefined();
+    expect(parseFallbackMintPrice("0.25")).toBe(0.25);
+    expect(() => parseFallbackMintPrice("-1")).toThrow("non-negative");
   });
 });

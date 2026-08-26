@@ -63,11 +63,15 @@ export function parsePublicList(value: string): string[] {
     .filter(Boolean);
 }
 
-export function parsePublicBoolean(value: string | undefined, fallback: boolean): boolean {
+export function parsePublicBoolean(
+  value: string | undefined,
+  fallback: boolean,
+  variableName = "public boolean"
+): boolean {
   if (value === undefined || value.trim() === "") return fallback;
   if (value.toLowerCase() === "true") return true;
   if (value.toLowerCase() === "false") return false;
-  throw new Error("NEXT_PUBLIC_COLLECTION_VERIFIED must be true or false");
+  throw new Error(`${variableName} must be true or false`);
 }
 
 export function normalizeTwitterHandle(value: string): string {
@@ -141,7 +145,8 @@ export const publicConfig: PublicMintConfig = Object.freeze({
   collection: Object.freeze({
     showInfo: parsePublicBoolean(
       process.env.NEXT_PUBLIC_SHOW_COLLECTION_INFO,
-      false
+      false,
+      "NEXT_PUBLIC_SHOW_COLLECTION_INFO"
     ),
     description:
       process.env.NEXT_PUBLIC_COLLECTION_DESCRIPTION ||
@@ -150,7 +155,8 @@ export const publicConfig: PublicMintConfig = Object.freeze({
     creatorImage: process.env.NEXT_PUBLIC_CREATOR_IMAGE || "",
     isVerified: parsePublicBoolean(
       process.env.NEXT_PUBLIC_COLLECTION_VERIFIED,
-      false
+      false,
+      "NEXT_PUBLIC_COLLECTION_VERIFIED"
     ),
   }),
 });

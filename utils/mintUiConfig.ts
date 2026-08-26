@@ -51,3 +51,27 @@ export function parseMintProgressDurationMs(
   }
   return parsed;
 }
+
+export function parsePriorityFeeMicroLamports(
+  value = process.env.NEXT_PUBLIC_MICROLAMPORTS
+): number {
+  if (!value?.trim()) return 1001;
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < 0 || parsed > 10_000_000) {
+    throw new Error(
+      "NEXT_PUBLIC_MICROLAMPORTS must be an integer between 0 and 10000000"
+    );
+  }
+  return parsed;
+}
+
+export function parseFallbackMintPrice(
+  value = process.env.NEXT_PUBLIC_MINT_PRICE
+): number | undefined {
+  if (!value?.trim()) return undefined;
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    throw new Error("NEXT_PUBLIC_MINT_PRICE must be a non-negative number");
+  }
+  return parsed;
+}

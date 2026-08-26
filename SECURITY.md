@@ -8,12 +8,17 @@ When `thirdPartySigner` is active, `/api/mint/submit` additionally enforces a na
 
 - expected Candy Machine, Guard, Core collection, programs, accounts, and signer set;
 - valid buyer and asset signatures;
-- one fresh authorization memo and nonce;
+- a live recent blockhash and replay-protected signed transaction;
 - bounded compute units and priority fee;
 - optional exact developer-fee transfer;
 - one final Core Candy Guard `MintV1` instruction;
 - approved lookup table and no unrelated top-level programs;
-- successful RPC simulation before broadcast.
+- signature-verified RPC simulation that creates the requested asset before broadcast.
+
+The endpoint rejects Candy Guard bot-tax simulations even though the on-chain
+program reports those penalty transactions as successful. The mint transaction
+contains no Memo instruction, keeping it compatible with
+`botTax.lastInstruction=true`.
 
 The server sends the signed transaction directly and never returns a reusable signer signature.
 

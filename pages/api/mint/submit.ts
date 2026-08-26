@@ -30,13 +30,12 @@ import {
 } from "../../../utils/developerFee";
 import { loadThirdPartySigner } from "../../../utils/server/thirdPartySigner";
 import {
-  consumeMintAuthorizationNonce,
+  consumeMintSubmissionKey,
   getMintAuthorizationMaxAge,
-  parseMintAuthorizationMemo,
 } from "../../../utils/server/mintAuthorizationCore";
 import { consumeMintRateLimit } from "../../../utils/server/mintRateLimitCore";
+import { mintSimulationCreatedAsset } from "../../../utils/server/mintSimulationCore";
 
-const MEMO_PROGRAM_ID = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
 const MINT_V1_DISCRIMINATOR = "9162c076b8937668";
 
 type ApiResult = { signature: string } | { error: string };
@@ -102,20 +101,11 @@ function enforceRateLimit(req: NextApiRequest, res: NextApiResponse, payer: stri
   }
 }
 
-function verifyRecentAuthorizationMemo(data: Uint8Array, payer: PublicKey) {
-  let maxAge: number;
+function getSubmissionReplayWindow(): number {
   try {
-    maxAge = getMintAuthorizationMaxAge();
+    return getMintAuthorizationMaxAge();
   } catch {
     fail("Mint authorization timing configuration is invalid", 503);
-  }
-  try {
-    return {
-      authorization: parseMintAuthorizationMemo(data, payer.toBase58(), Date.now(), maxAge),
-      maxAge,
-    };
-  } catch (error) {
-    fail(error instanceof Error ? error.message : "Invalid mint authorization memo");
   }
 }
 
@@ -217,7 +207,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ApiResult>) {
     if (typeof encoded !== "string" || encoded.length > 4096 || typeof payerText !== "string") {
       fail("Invalid request body");
     }
-    const payer = new PublicKey(payerText);
+    let payer: PublicKey;
+    try {
+      payer = new PublicKey(payerText);
+    } catch {
+      fail("Invalid payer address");
+    }
     enforceRateLimit(req, res, payer.toBase58());
 
     let transaction: VersionedTransaction;
@@ -303,7 +298,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ApiResult>) {
     const allowedPrograms = new Set([
       ComputeBudgetProgram.programId.toBase58(),
       SystemProgram.programId.toBase58(),
-      MEMO_PROGRAM_ID.toBase58(),
       guardProgram.toBase58(),
     ]);
     const instructions = message.compiledInstructions.map(toInstruction);
@@ -318,15 +312,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ApiResult>) {
     if (mintInstructions.length !== 1 || Buffer.from(mintInstructions[0].data).subarray(0, 8).toString("hex") !== MINT_V1_DISCRIMINATOR) {
       fail("Transaction must contain exactly one Candy Guard MintV1 instruction");
     }
-
-    const memoInstructions = instructions.filter((instruction) => instruction.programId.equals(MEMO_PROGRAM_ID));
-    if (memoInstructions.length !== 1 || memoInstructions[0].keys.length !== 0) {
-      fail("Transaction must contain one authorization memo");
-    }
-    if (!instructions[2]?.programId.equals(MEMO_PROGRAM_ID)) {
-      fail("Authorization memo must immediately follow the compute budget instructions");
-    }
-    const { authorization, maxAge } = verifyRecentAuthorizationMemo(memoInstructions[0].data, payer);
 
     const { recipient, lamports } = getFeeConfig();
     const systemInstructions = instructions.filter((instruction) => instruction.programId.equals(SystemProgram.programId));
@@ -344,9 +329,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ApiResult>) {
         fail("Developer fee transfer does not match the disclosed configuration");
       }
     }
-    const expectedMintIndex = lamports > BigInt(0) ? 4 : 3;
+    const expectedMintIndex = lamports > BigInt(0) ? 3 : 2;
     if (instructions.length !== expectedMintIndex + 1 ||
-        (lamports > BigInt(0) && !instructions[3].programId.equals(SystemProgram.programId))) {
+        (lamports > BigInt(0) && !instructions[2].programId.equals(SystemProgram.programId))) {
       fail("Transaction instruction order does not match the canonical mint flow");
     }
 
@@ -429,20 +414,42 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ApiResult>) {
       fail("Configured wallet is not the active third-party signer", 503);
     }
 
-    if (!consumeMintAuthorizationNonce(
-      authorization.nonceKey,
-      authorization.issuedAt + maxAge
-    )) {
-      fail("Mint authorization memo has already been used", 409);
+    const blockhashStatus = await connection.isBlockhashValid(
+      message.recentBlockhash,
+      { commitment: "confirmed" }
+    );
+    if (!blockhashStatus.value) {
+      fail("Transaction blockhash expired; approve a fresh transaction", 409);
+    }
+
+    const replayWindow = getSubmissionReplayWindow();
+    const submissionKey = `${payer.toBase58()}:${Buffer.from(
+      transaction.signatures[0]
+    ).toString("base64url")}`;
+    if (!consumeMintSubmissionKey(submissionKey, Date.now() + replayWindow)) {
+      fail("This signed mint transaction has already been submitted", 409);
     }
 
     transaction.sign([signer]);
     const simulation = await connection.simulateTransaction(transaction, {
       commitment: "processed",
       sigVerify: true,
+      accounts: {
+        encoding: "base64",
+        addresses: [asset.toBase58()],
+      },
     });
-    if (simulation.value.err) {
-      fail(`Mint simulation failed: ${JSON.stringify(simulation.value.err)}`, 422);
+    if (!mintSimulationCreatedAsset(simulation.value)) {
+      const botTaxTriggered = simulation.value.logs?.some((log) =>
+        log.includes("Candy Guard Botting is taxed")
+      );
+      if (botTaxTriggered) {
+        fail("Candy Guard rejected the mint; the bot-tax transaction was not broadcast", 422);
+      }
+      if (simulation.value.err) {
+        fail(`Mint simulation failed: ${JSON.stringify(simulation.value.err)}`, 422);
+      }
+      fail("Mint simulation completed without creating the requested asset", 422);
     }
     // The exact signed bytes were just simulated with signature verification.
     // Re-running RPC preflight here duplicates that work; the validator still

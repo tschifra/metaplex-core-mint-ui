@@ -30,6 +30,7 @@ import {
   updateCandyGuard,
 } from "@metaplex-foundation/mpl-core-candy-machine";
 import { buildDualPricingConfig } from "../utils/dualPricing";
+import { parsePriorityFeeMicroLamports } from "../utils/mintUiConfig";
 
 // Create toaster at module level for proper Chakra UI v3 usage
 const toaster = createToaster({ placement: "top" });
@@ -102,7 +103,7 @@ const updateDualPricing = async (
     // Add priority fee
     builder = builder.prepend(
       setComputeUnitPrice(umi, {
-        microLamports: parseInt(process.env.NEXT_PUBLIC_MICROLAMPORTS ?? "1001"),
+        microLamports: parsePriorityFeeMicroLamports(),
       })
     );
 
@@ -181,9 +182,7 @@ const createLut =
 
       builder = builder.prepend(
         setComputeUnitPrice(umi, {
-          microLamports: parseInt(
-            process.env.NEXT_PUBLIC_MICROLAMPORTS ?? "1001"
-          ),
+          microLamports: parsePriorityFeeMicroLamports(),
         })
       );
       const requiredCu = await getRequiredCU(umi, builder.build(umi));
@@ -270,9 +269,7 @@ const initializeGuards =
         try {
           builder = builder.prepend(
             setComputeUnitPrice(umi, {
-              microLamports: parseInt(
-                process.env.NEXT_PUBLIC_MICROLAMPORTS ?? "1001"
-              ),
+              microLamports: parsePriorityFeeMicroLamports(),
             })
           );
           const latestBlockhash = (await umi.rpc.getLatestBlockhash()).blockhash;

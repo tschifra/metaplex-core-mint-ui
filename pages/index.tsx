@@ -34,6 +34,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 import { useMintSound } from '../utils/useMintSound';
 import { parseFeatureEnabled } from '../utils/mintUiConfig';
+import { getMintableGuardGroups } from '../utils/guardResolution';
 
 const adminUiEnabled = parseFeatureEnabled(
   process.env.NEXT_PUBLIC_ADMIN_ENABLED,
@@ -246,7 +247,6 @@ const useCandyMachine = (
 ) => {
   const [candyMachine, setCandyMachine] = useState<CandyMachine>();
   const [candyGuard, setCandyGuard] = useState<CandyGuard>();
-  const [mintPrice, setMintPrice] = useState<number | null>(null);
 
   // Only fetch CM/CG on initial load (firstRun). After that, refreshCounters() handles updates.
   // Previously this depended on checkEligibility, which caused a re-fetch cycle every time
@@ -299,21 +299,12 @@ const useCandyMachine = (
 
         setCandyGuard(candyGuard);
 
-        if (candyMachine && candyGuard) {
-          // Fetch mint price from candy machine or guard
-          const solPayment = candyGuard.guards.solPayment;
-          const price = solPayment && 'lamports' in solPayment
-            ? Number(solPayment.lamports) / 1e9
-            : 0;
-          setMintPrice(price);
-        }
-
         setfirstRun(false);
       }
     })();
   }, [umi, candyMachineId, firstRun, setfirstRun]);
 
-  return { candyMachine, setCandyMachine, candyGuard, mintPrice };
+  return { candyMachine, setCandyMachine, candyGuard };
 };
 
 export default function Home() {
@@ -347,16 +338,12 @@ export default function Home() {
   const { open: isRecentMintOpen, onOpen: onRecentMintOpen, onClose: onRecentMintClose } = useDisclosure();
   const [selectedRecentMint, setSelectedRecentMint] = useState<RecentMint | null>(null);
 
-  // Stable window size that doesn't re-render on iOS address bar changes
-  const windowSize = useRef({ width: typeof window !== 'undefined' ? window.innerWidth : 1200, height: typeof window !== 'undefined' ? window.innerHeight : 800 });
+  // Capture the viewport once for confetti. Listening to every resize makes the
+  // whole page re-render when mobile browser chrome expands or collapses.
+  const [{ width, height }, setConfettiViewport] = useState({ width: 1200, height: 800 });
   useEffect(() => {
-    const update = () => { windowSize.current = { width: window.innerWidth, height: window.innerHeight }; };
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
+    setConfettiViewport({ width: window.innerWidth, height: window.innerHeight });
   }, []);
-  const width = windowSize.current.width;
-  const height = windowSize.current.height;
   const { playSuccess } = useMintSound();
 
   const wallet = useWallet();
@@ -401,10 +388,10 @@ export default function Home() {
   const [mintServiceStatus, setMintServiceStatus] = useState<"not-required" | "checking" | "ready" | "unavailable">("not-required");
 
   useEffect(() => {
-    const requiresBackendSigner = Boolean(candyGuard && [
-      candyGuard.guards,
-      ...candyGuard.groups.map((group) => group.guards),
-    ].some((guards) => guards.thirdPartySigner.__option === "Some"));
+    const requiresBackendSigner = Boolean(candyGuard &&
+      getMintableGuardGroups(candyGuard).some(
+        (group) => group.guards.thirdPartySigner.__option === "Some"
+      ));
 
     if (!requiresBackendSigner) {
       setMintServiceStatus("not-required");
@@ -737,7 +724,10 @@ export default function Home() {
     [candyMachine]
   );
 
-  const PageContent = ({ currentImage }: { currentImage: string }) => {
+  // Keep this as a render helper instead of a nested React component. A component
+  // declared inside Home receives a new identity on every state update, which
+  // would unmount and remount the open mint dialog whenever its stage changes.
+  const renderPageContent = (currentImage: string) => {
     return (
       <>
         <GlobalStyles />
@@ -1569,10 +1559,7 @@ export default function Home() {
       )}
 
       <div className={styles.center} style={{ flex: '1 1 auto', height: '100%', width: '100%' }}>
-        <PageContent
-          key="content"
-          currentImage={image}
-        />
+        {renderPageContent(image)}
       </div>
     </main>
   );

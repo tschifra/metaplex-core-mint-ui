@@ -78,7 +78,7 @@ This Guard does not select the minted item and does not provide randomness. An a
 
 For each Allow List group:
 
-1. Add the exact wallet list to `allowlist.tsx` under the exact group label.
+1. Add the exact wallet list to `allowlist.tsx` under the exact group label. Use `default` only for a Guard without named groups.
 2. Generate the Merkle root from that same list. When the admin panel is enabled, it displays roots for the compiled lists.
 3. Configure the on-chain group’s `allowList.merkleRoot` to that root.
 4. Re-run the build and deploy.
@@ -137,7 +137,7 @@ Production checklist:
 3. Run `npm run guard:third-party` as a dry run and verify the printed machine, Guard, signer, and groups.
 4. Apply the update with the exact confirmation address and the Candy Guard authority.
 5. Set `GUARD_REQUIRE_THIRD_PARTY_SIGNER=true` when running `npm run guard:check`; resolve every reported unprotected group.
-6. Confirm health reports `ready`, then test valid, modified, expired, replayed, and wrong-origin transactions on devnet.
+6. Confirm health reports `ready`, then test valid, modified, expired-blockhash, replayed, bot-tax, and wrong-origin transactions on devnet.
 
 ## Fairness and item selection
 
@@ -163,5 +163,5 @@ Before mainnet, test at least:
 - one mint and maximum configured multi-mint;
 - Allow List proof creation and repeat mint;
 - each Core/NFT/token gate, payment, or burn using real devnet assets;
-- signer healthy, signer unavailable, expired authorization, and replay attempt;
+- signer healthy, signer unavailable, expired blockhash, bot-tax rejection, and replay attempt;
 - sold-out behavior and metadata reveal/indexing delay.

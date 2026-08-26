@@ -69,7 +69,9 @@ import {
   parseMaxMintAmount,
   parseMintProgressDurationMs,
   parseMultimintEnabled,
+  parseFallbackMintPrice,
 } from "../utils/mintUiConfig";
+import { getMintableGuardGroup } from "../utils/guardResolution";
 
 const solAmountToSol = (amount: SolAmount | bigint): number =>
   Number(typeof amount === "bigint" ? amount : amount.basisPoints) / 1e9;
@@ -324,18 +326,6 @@ const mintClick = async (
     );
     const latestBlockhash = (await umi.rpc.getLatestBlockhash({commitment: "confirmed"}));
     const needsBackendSigner = guards.thirdPartySigner.__option === "Some";
-    let authorizationMemos: string[] | undefined;
-    if (needsBackendSigner) {
-      authorizationMemos = Array.from({ length: mintAmount }, () => {
-        const nonce = new Uint8Array(16);
-        window.crypto.getRandomValues(nonce);
-        const nonceHex = Array.from(nonce, (value) =>
-          value.toString(16).padStart(2, "0")
-        ).join("");
-        return `mintui:v1:${umi.identity.publicKey}:${Date.now()}:${nonceHex}`;
-      });
-    }
-
 
     const mintTxs: { transaction: Transaction; signers: Signer[] }[] =
       await buildTxs(
@@ -347,8 +337,7 @@ const mintClick = async (
         mintArgsArray,
         tables,
         latestBlockhash.blockhash,
-        buyBeer,
-        authorizationMemos
+        buyBeer
       );
     if (!mintTxs.length) {
       return;
@@ -675,25 +664,18 @@ export const ButtonList: React.FC<Props> = ({
     return <></>;
   }
 
-  // remove duplicates from guardList
-  //fucked up bugfix
-  let filteredGuardlist = guardList.filter(
+  const filteredGuardlist = guardList.filter(
     (elem, index, self) =>
       index === self.findIndex((t) => t.label === elem.label)
   );
   if (filteredGuardlist.length === 0) {
     return <></>;
   }
-  // Guard "default" can only be used to mint in case no other guard exists
-  if (filteredGuardlist.length > 1) {
-    filteredGuardlist = guardList.filter((elem) => elem.label != "default");
-  }
 
   let buttonGuardList: GuardButtonList[] = [];
   for (const guard of filteredGuardlist) {
     const text = getMintText(guard.label);
-    // find guard by label in candyGuard
-    const group = candyGuard.groups.find((elem) => elem.label === guard.label);
+    const group = getMintableGuardGroup(candyGuard, guard.label);
     let startTime = createBigInt(0);
     let endTime = createBigInt(0);
     let mintPrice = 0;
@@ -713,20 +695,12 @@ export const ButtonList: React.FC<Props> = ({
       } else if (group.guards.freezeSolPayment.__option === "Some") {
         mintPrice = solAmountToSol(group.guards.freezeSolPayment.value.lamports);
       }
-    } else {
-      // Check default guards if no group - check all payment types
-      if (candyGuard.guards.solPayment.__option === "Some") {
-        mintPrice = solAmountToSol(candyGuard.guards.solPayment.value.lamports);
-      } else if (candyGuard.guards.solFixedFee.__option === "Some") {
-        mintPrice = solAmountToSol(candyGuard.guards.solFixedFee.value.lamports);
-      } else if (candyGuard.guards.freezeSolPayment.__option === "Some") {
-        mintPrice = solAmountToSol(candyGuard.guards.freezeSolPayment.value.lamports);
-      }
     }
 
     // Fallback to .env MINT_PRICE if no payment guard found or price is 0
-    if ((mintPrice === 0 || isNaN(mintPrice) || mintPrice === undefined) && process.env.NEXT_PUBLIC_MINT_PRICE) {
-      mintPrice = parseFloat(process.env.NEXT_PUBLIC_MINT_PRICE);
+    const fallbackMintPrice = parseFallbackMintPrice();
+    if (mintPrice === 0 && fallbackMintPrice !== undefined) {
+      mintPrice = fallbackMintPrice;
     }
 
     const buttonElement: GuardButtonList = {
@@ -783,9 +757,10 @@ export const ButtonList: React.FC<Props> = ({
     const showStartTimer = buttonGuard.startTime > createBigInt(0) &&
       buttonGuard.startTime - solanaTime > createBigInt(0) &&
       (!buttonGuard.endTime || solanaTime - buttonGuard.endTime <= createBigInt(0));
-    const activeGuards = buttonGuard.label === "default"
-      ? candyGuard.guards
-      : candyGuard.groups.find((group) => group.label === buttonGuard.label)?.guards;
+    const activeGuards = getMintableGuardGroup(
+      candyGuard,
+      buttonGuard.label
+    )?.guards;
     const requiresBackendSigner = activeGuards?.thirdPartySigner.__option === "Some";
     const mintServiceReady = !requiresBackendSigner || mintServiceStatus === "ready";
     const quantityLimit = Math.max(

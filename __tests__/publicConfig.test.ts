@@ -28,7 +28,8 @@ describe("public customer configuration", () => {
       .toBe("@example");
     expect(parsePublicBoolean("true", false)).toBe(true);
     expect(parsePublicBoolean(undefined, false)).toBe(false);
-    expect(() => parsePublicBoolean("yes", false)).toThrow("must be true or false");
+    expect(() => parsePublicBoolean("yes", false, "EXAMPLE_FLAG"))
+      .toThrow("EXAMPLE_FLAG must be true or false");
   });
 
   it("parses reusable font and guard-label customization", () => {

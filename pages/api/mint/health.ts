@@ -7,6 +7,7 @@ import {
 } from "@metaplex-foundation/mpl-core-candy-machine";
 import { isSome, publicKey } from "@metaplex-foundation/umi";
 import { loadThirdPartySigner } from "../../../utils/server/thirdPartySigner";
+import { getMintableGuardGroups } from "../../../utils/guardResolution";
 
 type HealthBody = {
   ok: boolean;
@@ -47,15 +48,11 @@ async function inspectMintService(): Promise<HealthBody> {
       return { ok: false, status: "unavailable" };
     }
 
-    const defaultSigner = guard.guards.thirdPartySigner;
-    const configured = isSome(defaultSigner) &&
-      defaultSigner.value.signerKey.toString() === signer.publicKey.toBase58() &&
-      guard.groups.every((group) => {
-        const groupSigner = group.guards.thirdPartySigner;
-        const effectiveSigner = isSome(groupSigner) ? groupSigner : defaultSigner;
-        return isSome(effectiveSigner) &&
-          effectiveSigner.value.signerKey.toString() === signer.publicKey.toBase58();
-      });
+    const configured = getMintableGuardGroups(guard).every((group) => {
+      const groupSigner = group.guards.thirdPartySigner;
+      return isSome(groupSigner) &&
+        groupSigner.value.signerKey.toString() === signer.publicKey.toBase58();
+    });
     return configured
       ? { ok: true, status: "ready" }
       : { ok: false, status: "standby" };

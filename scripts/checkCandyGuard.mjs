@@ -91,10 +91,10 @@ const effectiveSignerByGroup = Object.fromEntries(guard.groups.map((group) => [
 const requireSigner = process.env.GUARD_REQUIRE_THIRD_PARTY_SIGNER === "true" ||
   (process.env.GUARD_REQUIRE_THIRD_PARTY_SIGNER !== "false" &&
     process.env.NEXT_PUBLIC_DEVELOPER_FEE_ENABLED === "true");
-if (requireSigner && !defaultSigner) {
+if (requireSigner && guard.groups.length === 0 && !defaultSigner) {
   errors.push("Default thirdPartySigner is missing; direct clients can bypass the signing service");
 }
-if (expectedSigner && defaultSigner && defaultSigner !== expectedSigner) {
+if (guard.groups.length === 0 && expectedSigner && defaultSigner && defaultSigner !== expectedSigner) {
   errors.push("Default thirdPartySigner does not match the configured server signer");
 }
 for (const [label, signer] of Object.entries(effectiveSignerByGroup)) {
@@ -178,7 +178,10 @@ console.log("Authority:", guard.authority.toString());
 console.log("Collection:", machine.collectionMint.toString());
 console.log("Supply:", `${machine.itemsRedeemed}/${machine.data.itemsAvailable} redeemed; ${machine.itemsLoaded} loaded`);
 console.log("Groups:", actualGroups.join(", ") || "none");
-console.log("Third-party signer:", defaultSigner || "missing");
+console.log("Default third-party signer:", defaultSigner || "missing");
+if (guard.groups.length > 0) {
+  console.log("Effective group signers:", JSON.stringify(effectiveSignerByGroup));
+}
 console.log("Snapshot:", snapshotPath);
 for (const warning of warnings) console.warn("WARNING:", warning);
 for (const error of errors) console.error("ERROR:", error);

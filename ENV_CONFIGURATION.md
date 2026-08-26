@@ -44,7 +44,7 @@ Every variable beginning with `NEXT_PUBLIC_` is embedded into browser JavaScript
 | `NEXT_PUBLIC_GUARD_SELECTION_MODE` | `all` | `all` shows eligible groups; `best` selects the cheapest eligible group. |
 | `NEXT_PUBLIC_GUARD_LABELS` | empty | Comma-separated `label:Display Name` mapping. |
 | `NEXT_PUBLIC_MINT_PRICE` | none | Display fallback only; it does not change the on-chain Guard price. |
-| `NEXT_PUBLIC_MICROLAMPORTS` | `1001` | Compute-unit price used when building transactions. |
+| `NEXT_PUBLIC_MICROLAMPORTS` | `1001` | Compute-unit price used when building transactions; integer from 0 through 10000000 and still bounded by the server policy. |
 | `NEXT_PUBLIC_MINT_PROGRESS_MIN_MS` | `3000` | Minimum progress artwork duration, 0–60000 ms. Confirmation time counts toward it. |
 | `NEXT_PUBLIC_LUT` | empty | Optional address lookup table created for the current machine/Guard. |
 | `NEXT_PUBLIC_ADMIN_ENABLED` | `false` | Enables authority-only administration UI. |
@@ -115,6 +115,10 @@ MINT_REQUIRE_ORIGIN=true
 
 `THIRD_PARTY_SIGNER_SECRET_KEY` accepts a JSON array of exactly 64 bytes or a base58-encoded 64-byte keypair. `MINT_RATE_LIMIT_PER_MINUTE` remains a legacy fallback; the separate IP and payer limits take precedence.
 
+`MINT_AUTHORIZATION_MAX_AGE_MS` controls the instance-local replay-cache window
+for signed transactions and must be between `5000` and `120000`. Solana's recent
+blockhash independently enforces transaction freshness.
+
 ## Guard audit and update variables
 
 These are for local scripts, not the browser:
@@ -129,10 +133,19 @@ CANDY_GUARD_PUBLIC_GROUP_LABEL=
 
 CANDY_GUARD_AUTHORITY_KEYPAIR_PATH=/absolute/protected/path/authority.json
 CANDY_GUARD_CONFIRM_ADDRESS=
+GUARD_SNAPSHOT_DIR=.guard-snapshots
 APPLY=false
 ```
 
 `guard:check` uses the expectation values to fail on configuration drift. `guard:third-party` never mutates the Guard unless `APPLY=true`, the authority key matches, and the exact fetched Guard address is confirmed.
+
+## Build tooling
+
+```env
+ANALYZE=false
+```
+
+Set `ANALYZE=true` only when you intentionally want the Next.js bundle analyzer during a local production build. It is not needed by the deployed application.
 
 ## Safe local example
 

@@ -59,6 +59,7 @@ import {
   eligibleCoreAssets,
   getCoreAssetRequirements,
 } from "./coreAssetSelection";
+import { getMintableGuardGroups } from "./guardResolution";
 
 const TOKEN_2022_PROGRAM_ID = publicKey(
   "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
@@ -81,10 +82,8 @@ export const guardChecker = async (
     return { guardReturn, ownedNfts: ownedTokens, ownedCoreAssets };
   }
 
-  const guardsToCheck: { label: string; guards: GuardSet }[] = [
-    ...candyGuard.groups,
-    { label: "default", guards: candyGuard.guards },
-  ];
+  const guardsToCheck: { label: string; guards: GuardSet }[] =
+    getMintableGuardGroups(candyGuard);
   const developerFeeLamports = getDeveloperFeeLamports();
 
   //no wallet connected. return dummies
