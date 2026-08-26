@@ -4,7 +4,7 @@ A production-oriented, configurable mint website for **Metaplex Core Candy Machi
 
 This is a community project and is not an official Metaplex product.
 
-Core Mint UI is a substantially modified fork of [Mark Sackerberg's original unofficial Candy Machine UI](https://github.com/MarkSackerberg/umi-cmv3-ui-inofficial). Thank you to Mark for the initial work that helped start this project.
+Core Mint UI is a substantially modified fork of [Mark Sackerberg's original unofficial Core Candy Machine UI](https://github.com/MarkSackerberg/cmc-ui-inofficial). Thank you to Mark for the initial work that helped start this project.
 
 ## UI preview
 
