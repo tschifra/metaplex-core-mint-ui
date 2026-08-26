@@ -24,6 +24,7 @@ The default visuals are generic template artwork. They do not use a previous cus
 - `docs/screenshots/site-overview.png` is rendered from the real Chakra/React mint-page components with generic documentation values.
 - `docs/screenshots/minting-progress.png` is rendered from the real `NFTRevealModal` mint-progress state.
 - `docs/screenshots/minted-nft-modal.png` is rendered from the real successful single-asset reveal state with generic metadata and traits.
+- `docs/screenshots/mint-page-loop.webp`, `minting-progress-loop.webp`, and `minted-nft-loop.webp` are infinite animated WebP previews recorded from those same real UI states at eight frames per second. The reveal loop includes the product's 600-piece confetti effect.
 
 No wallet was connected and no blockchain transaction was signed or submitted while producing these screenshots. Displayed supply, balance, address and price values are illustrative.
 

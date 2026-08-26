@@ -6,13 +6,19 @@ This is a community project and is not an official Metaplex product.
 
 ## UI preview
 
-![Generic Core Mint UI mint page](./docs/screenshots/site-overview.png)
+### Mint page
 
-![Core Mint UI transaction progress modal](./docs/screenshots/minting-progress.png)
+![Animated generic Core Mint UI mint page](./docs/screenshots/mint-page-loop.webp)
 
-![Core Mint UI successful NFT reveal modal](./docs/screenshots/minted-nft-modal.png)
+### Transaction progress
 
-These screenshots use the actual UI components with safe documentation values. They do not show a real wallet or submitted transaction. The neutral artwork is intended to be replaced for each collection; its source and generation notes are recorded in [ASSET_PROVENANCE.md](./ASSET_PROVENANCE.md).
+![Animated Core Mint UI transaction progress modal](./docs/screenshots/minting-progress-loop.webp)
+
+### Successful reveal
+
+![Animated Core Mint UI successful NFT reveal with confetti](./docs/screenshots/minted-nft-loop.webp)
+
+These looping previews use the actual UI components with safe documentation values. They do not show a real wallet or submitted transaction. The neutral artwork is intended to be replaced for each collection; its source and generation notes are recorded in [ASSET_PROVENANCE.md](./ASSET_PROVENANCE.md).
 
 ## Before you start
 
