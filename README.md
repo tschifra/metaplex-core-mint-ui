@@ -173,7 +173,7 @@ Core Mint UI includes an optional **Buy me a beer** function that adds a 0.0065 
 NEXT_PUBLIC_DEVELOPER_FEE_ENABLED=true
 ```
 
-Operators remain in control and can disable it with `false`. The amount and recipient are fixed in [`utils/developerFee.ts`](./utils/developerFee.ts), and operators should disclose the fee to minters. Enforcing it against custom clients requires the server-side signer and an effective `thirdPartySigner` Guard for every mintable group.
+Operators remain in control and can disable it with `false`. The amount and recipient are fixed in [`utils/developerFee.ts`](./utils/developerFee.ts). Enforcing it against custom clients requires the server-side signer and an effective `thirdPartySigner` Guard for every mintable group.
 
 Direct tips are also welcome at the Solana address:
 
