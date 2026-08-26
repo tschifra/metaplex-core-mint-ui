@@ -43,7 +43,6 @@ Every variable beginning with `NEXT_PUBLIC_` is embedded into browser JavaScript
 | `NEXT_PUBLIC_MAXMINTAMOUNT` | `1` | Maximum per click, from 1 through 15. On-chain limits still apply. |
 | `NEXT_PUBLIC_GUARD_SELECTION_MODE` | `all` | `all` shows eligible groups; `best` selects the cheapest eligible group. |
 | `NEXT_PUBLIC_GUARD_LABELS` | empty | Comma-separated `label:Display Name` mapping. |
-| `NEXT_PUBLIC_MINT_PRICE` | none | Display fallback only; it does not change the on-chain Guard price. |
 | `NEXT_PUBLIC_MICROLAMPORTS` | `1001` | Compute-unit price used when building transactions; integer from 0 through 10000000 and still bounded by the server policy. |
 | `NEXT_PUBLIC_MINT_PROGRESS_MIN_MS` | `3000` | Minimum progress artwork duration, 0–60000 ms. Confirmation time counts toward it. |
 | `NEXT_PUBLIC_LUT` | empty | Optional address lookup table created for the current machine/Guard. |

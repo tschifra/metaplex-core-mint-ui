@@ -507,20 +507,31 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [candyMachine, refreshCounterOnly, isShowNftOpen, isInitializerOpen, isMinting, isRecentMintOpen]);
 
-  // Refresh on page focus/visibility change (light refresh)
+  // Refresh wallet eligibility when returning from a wallet or funding flow.
+  // Balance and holder assets can change without the wallet connection itself
+  // changing, so the connection-only eligibility effect would otherwise stay
+  // stale until a full page reload.
   useEffect(() => {
-    const handleVisibilityChange = () => {
+    const handlePageReturn = () => {
       // Extra safeguard: also check if any modal/dialog is actually open in the DOM
       const anyDialogOpen = document.querySelector('[role="dialog"]') !== null;
 
       if (!document.hidden && candyMachine && !isInitializerOpen && !isShowNftOpen && !isMinting && !isRecentMintOpen && !anyDialogOpen) {
         refreshCounterOnly();
+        if (wallet.connected) {
+          void refreshWalletBalance();
+          setCheckEligibility(true);
+        }
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [candyMachine, refreshCounterOnly, isInitializerOpen, isShowNftOpen, isMinting, isRecentMintOpen]);
+    document.addEventListener('visibilitychange', handlePageReturn);
+    window.addEventListener('focus', handlePageReturn);
+    return () => {
+      document.removeEventListener('visibilitychange', handlePageReturn);
+      window.removeEventListener('focus', handlePageReturn);
+    };
+  }, [candyMachine, refreshCounterOnly, refreshWalletBalance, wallet.connected, isInitializerOpen, isShowNftOpen, isMinting, isRecentMintOpen]);
 
 
   // Optimized: Fetch both recent mints and collection stats in a single DAS call

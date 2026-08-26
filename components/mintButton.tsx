@@ -67,7 +67,6 @@ import {
   parseMaxMintAmount,
   parseMintProgressDurationMs,
   parseMultimintEnabled,
-  parseFallbackMintPrice,
 } from "../utils/mintUiConfig";
 import { getMintableGuardGroup } from "../utils/guardResolution";
 import { toaster } from "../utils/toaster";
@@ -680,12 +679,6 @@ export const ButtonList: React.FC<Props> = ({
       }
     }
 
-    // Fallback to .env MINT_PRICE if no payment guard found or price is 0
-    const fallbackMintPrice = parseFallbackMintPrice();
-    if (mintPrice === 0 && fallbackMintPrice !== undefined) {
-      mintPrice = fallbackMintPrice;
-    }
-
     const buttonElement: GuardButtonList = {
       label: guard ? guard.label : "default",
       allowed: guard.allowed,
@@ -710,17 +703,20 @@ export const ButtonList: React.FC<Props> = ({
       (a, b) => a.mintPrice - b.mintPrice
     );
 
+    const publicFallback = [...buttonGuardList].sort(
+      (a, b) => b.mintPrice - a.mintPrice
+    )[0];
+
     if (!isConnected) {
       // Show the public/highest price before the wallet reveals eligibility.
-      bestGuard = [...buttonGuardList].sort(
-        (a, b) => b.mintPrice - a.mintPrice
-      )[0];
+      bestGuard = publicFallback;
     } else if (sortedAllowed.length > 0) {
       bestGuard = sortedAllowed[0];
     } else {
-      bestGuard = [...buttonGuardList].sort(
-        (a, b) => a.mintPrice - b.mintPrice
-      )[0];
+      // No group is eligible. Keep showing the public offer and its failure
+      // reason instead of advertising a cheaper holder/allowlist group that
+      // the connected wallet cannot use.
+      bestGuard = publicFallback;
     }
 
     buttonGuardList = bestGuard ? [bestGuard] : [];

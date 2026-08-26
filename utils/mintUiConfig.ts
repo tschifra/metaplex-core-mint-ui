@@ -64,14 +64,3 @@ export function parsePriorityFeeMicroLamports(
   }
   return parsed;
 }
-
-export function parseFallbackMintPrice(
-  value = process.env.NEXT_PUBLIC_MINT_PRICE
-): number | undefined {
-  if (!value?.trim()) return undefined;
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed < 0) {
-    throw new Error("NEXT_PUBLIC_MINT_PRICE must be a non-negative number");
-  }
-  return parsed;
-}
