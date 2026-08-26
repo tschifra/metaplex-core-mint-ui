@@ -110,7 +110,9 @@ The list is compiled into browser JavaScript and is therefore public. Do not pla
 
 The server-only signer is strongly recommended when every production mint must pass this deployment's transaction policy. The buyer and new asset sign first; `/api/mint/submit` validates the complete transaction, applies the server signature, simulates it, and submits it without revealing reusable key material. The on-chain `thirdPartySigner` Guard must be effective for every mintable group, otherwise a custom client can bypass the service through an unprotected group.
 
-This signer protects the authorization path, not item randomness. The current service verifies that the asset is a separate signed account, but it does not select or assign the asset key. Neither `allowList` nor `thirdPartySigner` makes config-line selection cryptographically unpredictable. For fairness-sensitive launches, use Hidden Settings, commit the reveal hash before minting, and follow the reveal guidance in [CANDY_MACHINE_SETUP.md](./CANDY_MACHINE_SETUP.md).
+When the Guard is effective for every mintable group, direct clients cannot mint without this signer. This service accepts only the canonical direct-mint transaction, rejects unrelated instructions and wrapper transactions, signs the immutable message, and broadcasts it itself. That blocks unsigned direct access and atomic rollback wrappers used to accept only a desired draw.
+
+The signer is an anti-manipulation control, but it does not add entropy or make config-line selection cryptographically random. An eligible buyer still chooses when to request a mint, and chain state can change before execution. For fairness-sensitive launches, combine the signer with Hidden Settings, a precommitted reveal hash, and the reveal guidance in [CANDY_MACHINE_SETUP.md](./CANDY_MACHINE_SETUP.md).
 
 Set one signer source:
 

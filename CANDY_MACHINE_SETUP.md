@@ -98,7 +98,9 @@ These account types are not interchangeable. A mismatched Guard can make every b
 
 Use a third-party signer when every mint must pass the hosted server's transaction policy. It is required for enforcing this UI's optional developer-fee instruction against custom clients and is strongly recommended when the operator wants the server to reject modified transaction shapes. It adds a centralized availability dependency: if the service or key is unavailable, minting through protected groups stops.
 
-It is not a replacement for Hidden Settings or a reveal design. The current endpoint validates the transaction and requires a distinct signed asset account, but it does not generate or preassign that asset account. Therefore it must not be described as preventing config-line grinding or as a source of randomness.
+When the signer Guard is effective for every mintable group, direct clients cannot mint around the service. The current endpoint permits only a canonical direct `MintV1`, rejects wrapper and unrelated instructions, signs the immutable message, simulates it, and broadcasts it without returning a reusable signature. This blocks unauthorized direct mints and atomic rollback wrappers that accept only a desired result.
+
+It is still not a source of randomness or a replacement for Hidden Settings. It does not add entropy to Metaplex's config-line selection, and an eligible buyer can choose when to request a mint while chain state remains race-sensitive. Describe it as an important anti-manipulation control, not as a cryptographic randomness guarantee.
 
 Generate a dedicated Solana keypair outside the repository and store it in a secret manager. It should not be the Candy Machine authority, treasury, or a personal hot wallet. It needs no SOL because it only adds a signature; the buyer remains the payer.
 

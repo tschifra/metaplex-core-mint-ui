@@ -44,11 +44,11 @@ The admin button is feature-flagged and shown only when the connected wallet equ
 - Allow List addresses compiled into the browser are public. The Guard restricts wallet eligibility; it does not control item selection or add randomness.
 - Gatekeeper needs an external token-acquisition integration.
 - Custom and Token-2022 Guard behavior must be tested for the exact deployed programs/extensions.
-- A third-party signer forces protected groups through the configured signing policy, but it is authorization, not randomness. This implementation does not generate or preassign the new asset account.
+- A third-party signer forces protected groups through the configured signing policy. This service blocks direct unsigned access, modified transaction shapes, and atomic rollback wrappers, but it does not add entropy to item selection.
 
 ## Fair mint claims
 
-Do not describe config-line selection as cryptographically random, or claim that `allowList` or `thirdPartySigner` prevents item cherry-picking. [Metaplex documents](https://www.metaplex.com/docs/smart-contracts/core-candy-machine/create) that pseudo-random config-line selection can be influenced with sufficient resources. For fairness-sensitive launches use Hidden Settings, a precommitted reveal hash, a documented reveal process, and tests against the exact deployed Core Candy Machine version.
+Do not describe config-line selection as cryptographically random. An Allow List does not protect item selection. A correctly deployed third-party signer materially restricts cherry-picking by blocking direct custom transactions and atomic rollback wrappers, but it does not create randomness or eliminate request-timing and chain-state races. [Metaplex documents](https://www.metaplex.com/docs/smart-contracts/core-candy-machine/create) that pseudo-random config-line selection can be influenced with sufficient resources. For fairness-sensitive launches combine the signer with Hidden Settings, a precommitted reveal hash, a documented reveal process, and tests against the exact deployed Core Candy Machine version.
 
 ## Required checks
 
