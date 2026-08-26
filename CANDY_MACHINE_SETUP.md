@@ -72,6 +72,10 @@ Use `all` when buyers should select among eligible phases. Use `best` only when 
 
 ## Allow List Guard
 
+An Allow List restricts eligibility to wallet addresses included in a Merkle tree. Use it for a restricted phase, not automatically for every sale. A public phase should not have an Allow List unless every intended buyer is included.
+
+This Guard does not select the minted item and does not provide randomness. An allowlisted buyer is authorized to mint but may still attempt to influence a pseudo-random config-line result.
+
 For each Allow List group:
 
 1. Add the exact wallet list to `allowlist.tsx` under the exact group label.
@@ -91,6 +95,10 @@ The mint flow sends the Allow List proof route when the wallet does not already 
 These account types are not interchangeable. A mismatched Guard can make every buyer ineligible even when they own an asset with the expected collection name.
 
 ## Third-party signer setup
+
+Use a third-party signer when every mint must pass the hosted server's transaction policy. It is required for enforcing this UI's optional developer-fee instruction against custom clients and is strongly recommended when the operator wants the server to reject modified transaction shapes. It adds a centralized availability dependency: if the service or key is unavailable, minting through protected groups stops.
+
+It is not a replacement for Hidden Settings or a reveal design. The current endpoint validates the transaction and requires a distinct signed asset account, but it does not generate or preassign that asset account. Therefore it must not be described as preventing config-line grinding or as a source of randomness.
 
 Generate a dedicated Solana keypair outside the repository and store it in a secret manager. It should not be the Candy Machine authority, treasury, or a personal hot wallet. It needs no SOL because it only adds a signature; the buyer remains the payer.
 
@@ -120,6 +128,15 @@ Then run `npm run guard:third-party` again. It preserves unrelated Guards, sets 
 
 Deploy the signer service before applying the Guard and expect `/api/mint/health` to report `standby`. After the matching Guard is active, it should report `ready`.
 
+Production checklist:
+
+1. Set the server secret, `RPC_URL`, Candy Machine ID, and origin restrictions in the deployment environment.
+2. Deploy and confirm `/api/mint/health` reports `standby` before changing the on-chain Guard.
+3. Run `npm run guard:third-party` as a dry run and verify the printed machine, Guard, signer, and groups.
+4. Apply the update with the exact confirmation address and the Candy Guard authority.
+5. Set `GUARD_REQUIRE_THIRD_PARTY_SIGNER=true` when running `npm run guard:check`; resolve every reported unprotected group.
+6. Confirm health reports `ready`, then test valid, modified, expired, replayed, and wrong-origin transactions on devnet.
+
 ## Fairness and item selection
 
 Do not claim that config-line minting is cryptographically random or unpredictable. The current Metaplex documentation warns that pseudo-random config-line selection may be influenced and recommends hidden settings for reveal designs where that threat matters.
@@ -130,6 +147,7 @@ For a fairness-sensitive launch:
 - publish the reveal procedure before minting;
 - test the exact deployed program version on a local validator/devnet;
 - avoid exposing rarity-to-index mappings before reveal;
+- treat Allow Lists as wallet eligibility, not item-selection protection;
 - treat a third-party signer as transaction authorization, not as randomness.
 
 ## Final devnet matrix

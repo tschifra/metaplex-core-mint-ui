@@ -92,7 +92,9 @@ to show every eligible group, or use `best` to automatically show the cheapest e
 
 Implemented flows include SOL/token payments, time windows, mint limits, allowlists, SPL token gates, Token Metadata NFT gates, Metaplex Core asset gates, burns/payments, and optional third-party signing. Some advanced Guards require project-specific integration and testing. The exact support boundary is documented in [GUARD_SUPPORT.md](./GUARD_SUPPORT.md).
 
-## Allowlists
+## Allowlist access control (optional)
+
+Use an `allowList` Guard only for a presale or another phase restricted to approved wallet addresses. It is not required for a public mint. An Allow List answers **who may mint**; it does not determine **which collection item is minted** and does not prevent an eligible wallet from attempting to influence pseudo-random config-line selection.
 
 If your Guard uses `allowList`:
 
@@ -104,9 +106,11 @@ If your Guard uses `allowList`:
 
 The list is compiled into browser JavaScript and is therefore public. Do not place secrets in it.
 
-## Optional third-party signer
+## Transaction authorization with a third-party signer
 
-The server-only signer is needed only when an effective `thirdPartySigner` Guard is active. The buyer and new asset sign first; `/api/mint/submit` validates the complete transaction, applies the server signature, simulates it, and submits it without revealing reusable key material.
+The server-only signer is strongly recommended when every production mint must pass this deployment's transaction policy or include the optional developer fee. The buyer and new asset sign first; `/api/mint/submit` validates the complete transaction, applies the server signature, simulates it, and submits it without revealing reusable key material. The on-chain `thirdPartySigner` Guard must be effective for every mintable group, otherwise a custom client can bypass the service through an unprotected group.
+
+This signer protects the authorization path, not item randomness. The current service verifies that the asset is a separate signed account, but it does not select or assign the asset key. Neither `allowList` nor `thirdPartySigner` makes config-line selection cryptographically unpredictable. For fairness-sensitive launches, use Hidden Settings, commit the reveal hash before minting, and follow the reveal guidance in [CANDY_MACHINE_SETUP.md](./CANDY_MACHINE_SETUP.md).
 
 Set one signer source:
 
@@ -123,7 +127,7 @@ The signer does not need SOL because the buyer is the transaction payer. Its pub
 Audit without changing on-chain state:
 
 ```bash
-npm run guard:check
+GUARD_REQUIRE_THIRD_PARTY_SIGNER=true npm run guard:check
 npm run guard:third-party
 ```
 

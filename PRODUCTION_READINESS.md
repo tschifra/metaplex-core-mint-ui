@@ -45,8 +45,15 @@
 - [ ] Dry-run output and exact Candy Guard address reviewed.
 - [ ] Default and every effective group use the expected signer.
 - [ ] Server reports `ready` after activation.
+- [ ] `GUARD_REQUIRE_THIRD_PARTY_SIGNER=true npm run guard:check` reports no unprotected mintable group.
 - [ ] Valid mint, invalid shape, stale memo, replay, wrong origin, wrong payer, and excessive fee tests pass.
 - [ ] Rollback/rotation procedure and responsible operator are documented.
+
+## Fairness and reveal
+
+- [ ] Allow List is described only as wallet eligibility, never as item-selection protection.
+- [ ] Third-party signer is described only as transaction authorization, never as randomness.
+- [ ] A fairness-sensitive config-line sale has been replaced with Hidden Settings and a precommitted reveal process, or its influence risk is explicitly disclosed.
 
 ## Release evidence
 
