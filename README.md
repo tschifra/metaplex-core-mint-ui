@@ -10,6 +10,8 @@ This is a community project and is not an official Metaplex product.
 
 ![Core Mint UI transaction progress modal](./docs/screenshots/minting-progress.png)
 
+![Core Mint UI successful NFT reveal modal](./docs/screenshots/minted-nft-modal.png)
+
 These screenshots use the actual UI components with safe documentation values. They do not show a real wallet or submitted transaction. The neutral artwork is intended to be replaced for each collection; its source and generation notes are recorded in [ASSET_PROVENANCE.md](./ASSET_PROVENANCE.md).
 
 ## Before you start

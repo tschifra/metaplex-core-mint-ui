@@ -23,6 +23,7 @@ The default visuals are generic template artwork. They do not use a previous cus
 
 - `docs/screenshots/site-overview.png` is rendered from the real Chakra/React mint-page components with generic documentation values.
 - `docs/screenshots/minting-progress.png` is rendered from the real `NFTRevealModal` mint-progress state.
+- `docs/screenshots/minted-nft-modal.png` is rendered from the real successful single-asset reveal state with generic metadata and traits.
 
 No wallet was connected and no blockchain transaction was signed or submitted while producing these screenshots. Displayed supply, balance, address and price values are illustrative.
 
