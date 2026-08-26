@@ -1,0 +1,209 @@
+:root {
+  --font-audiowide: 'Audiowide', cursive;
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 45, 55, 72;
+  --secondary-background-rgb: 74, 85, 104;
+  --tertiary-background-rgb: 160, 174, 192;
+  --hover-background-rgb: 90, 103, 124;
+  --accent-rgb: 78, 205, 196;
+  --darker-accent-rgb: 68, 160, 141;
+  --border-radius: 8px;
+}
+
+html {
+  background-color: #08080c !important;
+}
+
+body {
+  font-family: var(--font-audiowide);
+  min-height: 100vh;
+  color: white;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  color: white;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  /* Background is set on html element - don't override here */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+/* Wallet adapter button styles */
+.wallet-adapter-button,
+.wallet-adapter-dropdown-list,
+.wallet-adapter-modal-wrapper {
+  font-family: var(--font-audiowide) !important;
+}
+
+button.wallet-adapter-button-trigger {
+  cursor: pointer;
+  color: white !important;
+  border: 1px solid rgb(var(--tertiary-background-rgb)) !important;
+  border-radius: var(--border-radius) !important;
+  background-color: rgb(var(--secondary-background-rgb)) !important;
+  font-size: 24px !important;
+  font-family: var(--font-audiowide) !important;
+  display: block !important;
+  margin: 0 auto !important;
+  min-width: 150px;
+  min-height: 48px;
+}
+
+button.wallet-adapter-button-trigger:hover {
+  background-color: rgb(var(--hover-background-rgb)) !important;
+}
+
+/* Wallet modal - ensure it's visible above everything */
+.wallet-adapter-modal-wrapper {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+.wallet-adapter-modal {
+  z-index: 99999 !important;
+}
+
+.wallet-adapter-modal-overlay {
+  z-index: 99998 !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Stabilize wallet button during state changes */
+.wallet-adapter-button {
+  min-width: 150px;
+  transition: background-color 0.15s ease, opacity 0.15s ease !important;
+}
+
+/* Prevent layout shift when wallet connects */
+.wallet-adapter-button-start-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, select {
+  color: white !important;
+}
+
+::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  /* Prevent text inflation on mobile */
+  body {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Optimize touch targets */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Reduce animations on mobile for performance */
+  * {
+    animation-duration: 0.5s !important;
+    transition-duration: 0.3s !important;
+  }
+
+  /* Better scrolling on mobile */
+  html {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Disable hover effects on mobile */
+  *:hover {
+    transform: none !important;
+  }
+
+  /* Better image rendering on mobile */
+  img {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Smooth scrolling everywhere */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(139, 92, 246, 0.4);
+  color: white;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.7);
+}
+
+/* High DPI screen optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

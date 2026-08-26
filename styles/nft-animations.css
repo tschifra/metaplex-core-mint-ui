@@ -1,0 +1,377 @@
+/* Modern NFT Reveal Animation - Holographic flip with depth */
+@keyframes nftReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotateY(-180deg) translateZ(-200px);
+    filter: blur(20px) brightness(0.5);
+  }
+  40% {
+    transform: scale(1.15) rotateY(-90deg) translateZ(-50px);
+    filter: blur(10px) brightness(0.8);
+  }
+  70% {
+    transform: scale(1.05) rotateY(-20deg) translateZ(20px);
+    filter: blur(2px) brightness(1.1);
+  }
+  85% {
+    transform: scale(0.98) rotateY(5deg) translateZ(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg) translateZ(0px);
+    filter: blur(0px) brightness(1);
+  }
+}
+
+/* Enhanced glow pulse with rainbow effect */
+@keyframes glowPulse {
+  0% {
+    filter:
+      drop-shadow(0 0 15px rgba(78, 205, 196, 0.6))
+      drop-shadow(0 0 30px rgba(78, 205, 196, 0.3))
+      drop-shadow(0 0 45px rgba(138, 43, 226, 0.2));
+  }
+  25% {
+    filter:
+      drop-shadow(0 0 20px rgba(138, 43, 226, 0.7))
+      drop-shadow(0 0 40px rgba(255, 107, 107, 0.4))
+      drop-shadow(0 0 60px rgba(78, 205, 196, 0.2));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 25px rgba(255, 107, 107, 0.8))
+      drop-shadow(0 0 50px rgba(255, 193, 7, 0.5))
+      drop-shadow(0 0 75px rgba(138, 43, 226, 0.3));
+  }
+  75% {
+    filter:
+      drop-shadow(0 0 20px rgba(255, 193, 7, 0.7))
+      drop-shadow(0 0 40px rgba(78, 205, 196, 0.4))
+      drop-shadow(0 0 60px rgba(255, 107, 107, 0.2));
+  }
+  100% {
+    filter:
+      drop-shadow(0 0 15px rgba(78, 205, 196, 0.6))
+      drop-shadow(0 0 30px rgba(78, 205, 196, 0.3))
+      drop-shadow(0 0 45px rgba(138, 43, 226, 0.2));
+  }
+}
+
+/* Smooth elastic slide-in for title */
+@keyframes titleSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+    filter: blur(10px);
+  }
+  60% {
+    transform: translateY(-5px) scale(1.02);
+    filter: blur(0px);
+  }
+  80% {
+    transform: translateY(2px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Dynamic button entrance from left */
+@keyframes buttonSlideLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px) rotate(-10deg) scale(0.8);
+    filter: blur(8px);
+  }
+  60% {
+    transform: translateX(5px) rotate(2deg) scale(1.05);
+    filter: blur(0px);
+  }
+  80% {
+    transform: translateX(-2px) rotate(-1deg) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Dynamic button entrance from right */
+@keyframes buttonSlideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100px) rotate(10deg) scale(0.8);
+    filter: blur(8px);
+  }
+  60% {
+    transform: translateX(-5px) rotate(-2deg) scale(1.05);
+    filter: blur(0px);
+  }
+  80% {
+    transform: translateX(2px) rotate(1deg) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Enhanced particle burst effect */
+@keyframes particle {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(calc(var(--tx) * 0.5), calc(var(--ty) * 0.5)) scale(1.2) rotate(180deg);
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Smooth floating particles with rotation */
+@keyframes floatParticle {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-50vh) translateX(calc(var(--drift) * 0.5)) rotate(180deg);
+    opacity: 1;
+  }
+  95% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(var(--drift)) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Enhanced shimmer with rainbow gradient */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Energetic button pulse */
+@keyframes buttonPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 20px rgba(78, 205, 196, 0.4),
+      0 0 40px rgba(138, 43, 226, 0.2);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow:
+      0 0 35px rgba(78, 205, 196, 0.8),
+      0 0 60px rgba(138, 43, 226, 0.4),
+      0 0 80px rgba(255, 107, 107, 0.2);
+  }
+}
+
+/* Sold out shake effect */
+@keyframes soldOutShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-8px) rotate(-2deg);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(8px) rotate(2deg);
+  }
+}
+
+/* Sold out pulse */
+@keyframes soldOutPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.15);
+  }
+}
+
+/* Smooth modal entrance */
+@keyframes slideInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Epic modal entrance with bounce */
+@keyframes modalDramaticEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotateZ(-10deg);
+    filter: blur(20px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotateZ(5deg);
+    filter: blur(0px);
+  }
+  70% {
+    transform: scale(0.95) rotateZ(-2deg);
+  }
+  85% {
+    transform: scale(1.05) rotateZ(1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateZ(0deg);
+    filter: blur(0px);
+  }
+}
+
+/* Confetti explosion effect */
+@keyframes confettiExplode {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.8) rotate(180deg);
+  }
+  60% {
+    transform: scale(0.9) rotate(270deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+/* New: Attribute card stagger animation */
+@keyframes attributeFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* New: Image border glow animation */
+@keyframes borderGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(78, 205, 196, 0.5),
+      inset 0 0 20px rgba(78, 205, 196, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(138, 43, 226, 0.7),
+      inset 0 0 30px rgba(138, 43, 226, 0.2);
+  }
+}
+
+/* New: Success checkmark animation */
+@keyframes checkmarkDraw {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* New: Holographic overlay effect */
+@keyframes holographicShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Mobile optimizations - simpler animations for better performance */
+@media (max-width: 768px) {
+  @keyframes nftReveal {
+    0% {
+      opacity: 0;
+      transform: scale(0.7);
+      filter: blur(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+      filter: blur(0px);
+    }
+  }
+
+  @keyframes glowPulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 10px rgba(78, 205, 196, 0.5));
+    }
+    50% {
+      filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.8));
+    }
+  }
+
+  @keyframes buttonPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.04);
+    }
+  }
+
+  @keyframes particle {
+    0% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--tx), var(--ty)) scale(0);
+      opacity: 0;
+    }
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

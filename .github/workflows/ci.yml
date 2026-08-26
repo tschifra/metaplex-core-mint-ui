@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # CI must not depend on ignored local files or Production secrets.
+      NEXT_PUBLIC_CANDY_MACHINE_ID: 11111111111111111111111111111111
+      NEXT_PUBLIC_ENVIRONMENT: devnet
+      NEXT_PUBLIC_SITE_URL: https://example.com/
+      NEXT_PUBLIC_ADMIN_ENABLED: "false"
+      NEXT_PUBLIC_FONT_PRESET: system
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Verify canonical MintV1 shape
+        run: npm run security:mint-shape
+
+      - name: Test
+        run: npm test -- --runInBand
+
+      - name: Reject critical production vulnerabilities
+        run: npm run security:audit
+
+      - name: Build production bundle
+        run: npm run build

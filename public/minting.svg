@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title description">
+  <title id="title">Core asset minting animation</title>
+  <desc id="description">A luminous crystal forms inside animated orbital rings.</desc>
+  <style>
+    .orbit-outer { animation: spin 8s linear infinite; transform-origin: 500px 445px; }
+    .orbit-inner { animation: spin-reverse 5s linear infinite; transform-origin: 500px 445px; }
+    .core { animation: float 2.8s ease-in-out infinite; transform-origin: 500px 445px; }
+    .glow { animation: pulse 2.1s ease-in-out infinite; transform-origin: 500px 470px; }
+    .particle-a { animation: drift-a 4s ease-in-out infinite; }
+    .particle-b { animation: drift-b 5s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin-reverse { to { transform: rotate(-360deg); } }
+    @keyframes float { 50% { transform: translateY(-18px) scale(1.025); } }
+    @keyframes pulse { 50% { transform: scale(1.16); opacity: .55; } }
+    @keyframes drift-a { 50% { transform: translate(15px, -18px); opacity: .4; } }
+    @keyframes drift-b { 50% { transform: translate(-12px, 20px); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) {
+      .orbit-outer, .orbit-inner, .core, .glow, .particle-a, .particle-b { animation: none; }
+    }
+  </style>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="42%" r="72%">
+      <stop offset="0" stop-color="#24115a"/>
+      <stop offset=".52" stop-color="#100b2c"/>
+      <stop offset="1" stop-color="#05050b"/>
+    </radialGradient>
+    <linearGradient id="spectrum" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#67e8f9"/>
+      <stop offset=".48" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#f472b6"/>
+    </linearGradient>
+    <linearGradient id="crystal" x1=".1" y1=".05" x2=".9" y2=".95">
+      <stop stop-color="#ecfeff"/>
+      <stop offset=".28" stop-color="#67e8f9"/>
+      <stop offset=".62" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#f0abfc"/>
+    </linearGradient>
+    <radialGradient id="platform" cx="50%" cy="30%" r="65%">
+      <stop stop-color="#d8b4fe" stop-opacity=".9"/>
+      <stop offset=".35" stop-color="#7c3aed" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#05050b" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <filter id="smallGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="1000" rx="72" fill="url(#background)"/>
+  <path d="M0 760c145-75 295-112 500-112s355 37 500 112v240H0z" fill="#090717"/>
+
+  <g opacity=".8">
+    <circle class="particle-a" cx="178" cy="268" r="6" fill="#67e8f9"/>
+    <circle class="particle-b" cx="804" cy="248" r="8" fill="#f0abfc"/>
+    <circle class="particle-b" cx="235" cy="602" r="5" fill="#c4b5fd"/>
+    <circle class="particle-a" cx="756" cy="614" r="4" fill="#67e8f9"/>
+    <circle cx="852" cy="460" r="3" fill="#fff"/>
+    <circle cx="118" cy="478" r="3" fill="#fff" opacity=".65"/>
+  </g>
+
+  <circle class="glow" cx="500" cy="470" r="170" fill="#7c3aed" opacity=".3" filter="url(#softGlow)"/>
+
+  <g class="orbit-outer">
+    <circle cx="500" cy="445" r="295" fill="none" stroke="url(#spectrum)" stroke-width="10" stroke-dasharray="155 54 20 38" opacity=".84"/>
+    <circle cx="500" cy="150" r="12" fill="#67e8f9" filter="url(#smallGlow)"/>
+    <circle cx="214" cy="514" r="9" fill="#f472b6" filter="url(#smallGlow)"/>
+  </g>
+  <g class="orbit-inner">
+    <ellipse cx="500" cy="445" rx="245" ry="116" fill="none" stroke="#c4b5fd" stroke-width="8" stroke-dasharray="45 22" opacity=".72"/>
+    <circle cx="742" cy="445" r="10" fill="#fff" filter="url(#smallGlow)"/>
+  </g>
+
+  <g class="core">
+    <path d="M500 238 682 375 625 588 500 675 375 588 318 375z" fill="url(#crystal)" stroke="#e0f2fe" stroke-width="7"/>
+    <path d="m500 238 34 207-216-70z" fill="#fff" opacity=".34"/>
+    <path d="m500 238 182 137-148 70z" fill="#38bdf8" opacity=".34"/>
+    <path d="m318 375 216 70-159 143z" fill="#6d28d9" opacity=".52"/>
+    <path d="m682 375-148 70 91 143z" fill="#db2777" opacity=".42"/>
+    <path d="m375 588 159-143-34 230z" fill="#7c3aed" opacity=".58"/>
+    <path d="m625 588-91-143-34 230z" fill="#a855f7" opacity=".5"/>
+    <circle cx="510" cy="435" r="28" fill="#fff" opacity=".92" filter="url(#smallGlow)"/>
+  </g>
+
+  <ellipse cx="500" cy="730" rx="310" ry="74" fill="url(#platform)"/>
+  <ellipse cx="500" cy="720" rx="245" ry="44" fill="none" stroke="url(#spectrum)" stroke-width="9" opacity=".9"/>
+  <ellipse cx="500" cy="720" rx="176" ry="25" fill="#d8b4fe" opacity=".2"/>
+
+  <text x="500" y="875" fill="#fff" font-family="system-ui, sans-serif" font-size="56" font-weight="750" letter-spacing="12" text-anchor="middle">MINTING</text>
+  <text x="500" y="922" fill="#c4b5fd" font-family="system-ui, sans-serif" font-size="25" letter-spacing="3" text-anchor="middle">CREATING YOUR ASSET</text>
+</svg>
