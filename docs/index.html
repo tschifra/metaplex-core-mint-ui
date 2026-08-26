@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Metaplex Core Mint UI – Candy Machine Mint Website for Solana</title>
+    <meta
+      name="description"
+      content="A configurable Next.js mint UI for Metaplex Core Candy Machine on Solana with Candy Guards, allowlists, multi-mint, RPC proxying, and optional server-side signing."
+    />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://tschifra.github.io/metaplex-core-mint-ui/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Metaplex Core Mint UI" />
+    <meta
+      property="og:description"
+      content="A production-oriented mint website for Metaplex Core Candy Machine on Solana."
+    />
+    <meta property="og:url" content="https://tschifra.github.io/metaplex-core-mint-ui/" />
+    <meta
+      property="og:image"
+      content="https://tschifra.github.io/metaplex-core-mint-ui/screenshots/site-overview.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "Metaplex Core Mint UI",
+        "description": "A configurable Next.js mint UI for Metaplex Core Candy Machine on Solana.",
+        "codeRepository": "https://github.com/tschifra/metaplex-core-mint-ui",
+        "programmingLanguage": ["TypeScript", "JavaScript"],
+        "runtimePlatform": "Node.js 24",
+        "author": { "@type": "Person", "name": "tschifra" }
+      }
+    </script>
+    <style>
+      :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+      * { box-sizing: border-box; }
+      body { margin: 0; color: #f7f4ff; background: #08080d; line-height: 1.6; }
+      body::before { content: ""; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(circle at 20% 0%, #6d28d933, transparent 38%), radial-gradient(circle at 90% 30%, #0891b222, transparent 32%); }
+      main, footer { position: relative; width: min(1080px, calc(100% - 32px)); margin: auto; }
+      header { padding: 88px 0 54px; text-align: center; }
+      .eyebrow { color: #b69cff; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: .78rem; }
+      h1 { margin: 12px auto 18px; max-width: 900px; font-size: clamp(2.5rem, 8vw, 5.7rem); line-height: .98; letter-spacing: -.055em; }
+      .lead { max-width: 780px; margin: auto; color: #c7c2d5; font-size: clamp(1.05rem, 2.4vw, 1.3rem); }
+      .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 30px; }
+      .button { display: inline-block; padding: 12px 18px; border-radius: 12px; color: white; text-decoration: none; font-weight: 750; background: linear-gradient(135deg, #7c3aed, #4f46e5); box-shadow: 0 12px 35px #5b21b633; }
+      .button.secondary { background: #ffffff10; border: 1px solid #ffffff20; box-shadow: none; }
+      .preview { display: block; width: min(880px, 100%); margin: 18px auto 70px; border-radius: 22px; border: 1px solid #ffffff18; box-shadow: 0 30px 100px #000a; }
+      section { margin: 70px 0; }
+      h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -.035em; }
+      .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .card { padding: 22px; border: 1px solid #ffffff15; border-radius: 18px; background: linear-gradient(145deg, #171521cc, #0d0c13cc); }
+      .card h3 { margin-top: 0; }
+      .card p, .muted { color: #aaa5b8; }
+      pre { overflow-x: auto; padding: 20px; border: 1px solid #ffffff15; border-radius: 15px; background: #050508; color: #c4b5fd; }
+      details { padding: 17px 0; border-bottom: 1px solid #ffffff16; }
+      summary { cursor: pointer; font-weight: 750; }
+      footer { padding: 35px 0 55px; color: #8e899c; border-top: 1px solid #ffffff12; }
+      a { color: #b9a5ff; }
+      @media (max-width: 760px) { header { padding-top: 58px; } .grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="eyebrow">Solana · Metaplex Core · Candy Machine</div>
+        <h1>Metaplex Core Mint UI</h1>
+        <p class="lead">
+          A configurable, production-oriented Next.js mint website for Metaplex Core Candy Machine,
+          with guarded mint flows, multi-mint, RPC proxying, and optional server-side authorization.
+        </p>
+        <div class="actions">
+          <a class="button" href="https://github.com/tschifra/metaplex-core-mint-ui">View source on GitHub</a>
+          <a class="button secondary" href="https://github.com/tschifra/metaplex-core-mint-ui#quick-start">Installation guide</a>
+        </div>
+      </header>
+
+      <img class="preview" src="screenshots/site-overview.png" alt="Metaplex Core Mint UI mint page preview" width="1200" height="675" />
+
+      <section aria-labelledby="features">
+        <h2 id="features">A complete Core Candy Machine frontend</h2>
+        <div class="grid">
+          <article class="card"><h3>Candy Guard support</h3><p>Guard groups, allowlists, payments, dates, mint limits, token gates, NFT gates, Core asset gates, burns, and payments.</p></article>
+          <article class="card"><h3>Production controls</h3><p>Same-origin RPC proxy, method filtering, rate limits, configuration checks, signer health, transaction policy, and simulation.</p></article>
+          <article class="card"><h3>Customizable mint UX</h3><p>Environment-driven branding, wallet connection, multi-mint, recent mints, animated progress, reveal modal, and responsive layouts.</p></article>
+        </div>
+      </section>
+
+      <section aria-labelledby="start">
+        <h2 id="start">Install the mint UI</h2>
+        <pre><code>git clone https://github.com/tschifra/metaplex-core-mint-ui.git
+cd metaplex-core-mint-ui
+npm ci
+cp .env.example .env.local
+npm run dev</code></pre>
+        <p class="muted">Create and load your Metaplex Core Candy Machine and Candy Guard first. Then configure the public Candy Machine address and a private DAS-enabled RPC endpoint.</p>
+      </section>
+
+      <section aria-labelledby="faq">
+        <h2 id="faq">Metaplex Core mint UI FAQ</h2>
+        <details open><summary>What is Metaplex Core Mint UI?</summary><p>It is a community-maintained customer-facing mint website for collections distributed through Metaplex Core Candy Machine on Solana.</p></details>
+        <details><summary>Can it be deployed on Vercel?</summary><p>Yes. The repository documents Vercel deployment, environment variables, private RPC configuration, and the optional server-side signer.</p></details>
+        <details><summary>Does it create the Candy Machine?</summary><p>No. Use official Metaplex tools to create the collection, Core Candy Machine, Candy Guard, and config lines before connecting the UI.</p></details>
+        <details><summary>Is this an official Metaplex product?</summary><p>No. It is an independent community project and an acknowledged fork of Mark Sackerberg's original unofficial Core Candy Machine UI.</p></details>
+      </section>
+    </main>
+    <footer>
+      <p>Community project · Not an official Metaplex product · <a href="https://github.com/MarkSackerberg/cmc-ui-inofficial">Original Core UI</a> · <a href="https://github.com/tschifra/metaplex-core-mint-ui/blob/main/PROVENANCE.md">Provenance</a></p>
+    </footer>
+  </body>
+</html>

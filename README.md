@@ -1,8 +1,10 @@
-# Core Mint UI
+# Metaplex Core Mint UI
 
-A production-oriented, configurable mint website for **Metaplex Core Candy Machine** on Solana. It includes wallet connection, Candy Guard groups, allowlists, Core and Token Metadata gates, multi-mint, an HTTP RPC proxy, optional server-only third-party signing, recent mints, reveal UI, and authority-only administration tools.
+An unofficial, production-oriented, configurable mint website for **Metaplex Core Candy Machine** on Solana. It includes wallet connection, Candy Guard groups, allowlists, Core and Token Metadata gates, multi-mint, an HTTP RPC proxy, optional server-only third-party signing, recent mints, reveal UI, and authority-only administration tools.
 
 This is a community project and is not an official Metaplex product.
+
+[Project website](https://tschifra.github.io/metaplex-core-mint-ui/) · [Quick start](#quick-start) · [Deployment guide](./DEPLOYMENT.md) · [Candy Guard support](./GUARD_SUPPORT.md)
 
 Core Mint UI is a substantially modified fork of [Mark Sackerberg's original unofficial Core Candy Machine UI](https://github.com/MarkSackerberg/cmc-ui-inofficial). Thank you to Mark for the initial work that helped start this project.
 
@@ -38,8 +40,8 @@ Follow [CANDY_MACHINE_SETUP.md](./CANDY_MACHINE_SETUP.md) before configuring the
 ## Quick start
 
 ```bash
-git clone YOUR_REPOSITORY_URL core-mint-ui
-cd core-mint-ui
+git clone https://github.com/tschifra/metaplex-core-mint-ui.git
+cd metaplex-core-mint-ui
 npm ci
 cp .env.example .env.local
 ```
@@ -170,6 +172,24 @@ Use `.env.local` for local development. For Vercel, copy `.env.vercel.example` t
 The browser communicates with the same-origin `/api/rpc` proxy. Production origin checks, method allowlists, size limits, weighted rate limiting, transaction validation, and signer health checks are included. Instance-local rate limits are best-effort on serverless platforms; also configure quotas at your RPC provider or platform firewall.
 
 Detailed deployment instructions are in [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+## Frequently asked questions
+
+### What is Metaplex Core Mint UI?
+
+It is a configurable Next.js mint frontend for collections distributed through Metaplex Core Candy Machine on Solana. It is a community project and not an official Metaplex product.
+
+### Does it support Core Candy Guards?
+
+Yes. Supported flows include Guard groups, SOL and token payments, start and end dates, mint limits, allowlists, token and NFT gates, Core asset gates, burns and payments, plus optional server-side third-party signing. See [GUARD_SUPPORT.md](./GUARD_SUPPORT.md) for the exact support boundary.
+
+### Can I deploy the mint UI on Vercel?
+
+Yes. The repository includes Vercel-oriented environment templates, same-origin RPC proxying, signer endpoints, health checks, transaction validation, and deployment documentation. Test the complete configuration on devnet before using mainnet.
+
+### Does the UI create a Core Candy Machine?
+
+No. Create the collection, Core Candy Machine, Candy Guard, and items first with official Metaplex tooling. This repository provides the customer-facing mint website and limited authority-only administration helpers.
 
 ## Support this project
 

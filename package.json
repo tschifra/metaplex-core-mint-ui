@@ -1,5 +1,5 @@
 {
-  "name": "core-mint-ui",
+  "name": "metaplex-core-mint-ui",
   "version": "0.1.0",
   "description": "Configurable Next.js mint UI for Metaplex Core Candy Machine on Solana",
   "license": "UNLICENSED",

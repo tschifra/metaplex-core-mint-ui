@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tschifra.github.io/metaplex-core-mint-ui/sitemap.xml
