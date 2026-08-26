@@ -184,7 +184,7 @@ Operators remain in control and can disable it with `false`. The amount and reci
 Direct tips are also welcome at the Solana address:
 
 ```text
-E4jpuwa7ppY2hmF2RWcfYrQ2FAXfLeVwPVGZZJVq9sk5
+4Xnqo7AKZg4PX7ojywUNvpBtGLfY354q7ZCY2FJgcm8p
 ```
 
 ## Documentation

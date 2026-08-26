@@ -24,7 +24,7 @@ describe("developer fee configuration", () => {
 
   it("uses the documented project support wallet", () => {
     expect(DEVELOPER_FEE_RECIPIENT).toBe(
-      "E4jpuwa7ppY2hmF2RWcfYrQ2FAXfLeVwPVGZZJVq9sk5"
+      "4Xnqo7AKZg4PX7ojywUNvpBtGLfY354q7ZCY2FJgcm8p"
     );
   });
 
