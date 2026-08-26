@@ -39,14 +39,17 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Reject dead code and undeclared dependencies
+        run: npm run deadcode
+
       - name: Typecheck
         run: npm run typecheck
 
       - name: Verify canonical MintV1 shape
         run: npm run security:mint-shape
 
-      - name: Test
-        run: npm test -- --runInBand
+      - name: Test with coverage floor
+        run: npm run test:coverage -- --runInBand
 
       - name: Reject critical production vulnerabilities
         run: npm run security:audit
