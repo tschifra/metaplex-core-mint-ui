@@ -6,7 +6,7 @@ Core Mint UI is a substantially modified fork of:
 
 Thank you to Mark Sackerberg for creating and sharing the initial unofficial Candy Machine UI that helped start this project.
 
-It was later substantially modified, including migration to Metaplex Core Candy Machine, a new interface, Guard support, RPC proxying, server-side transaction policy, third-party signer service, configuration validation, tests, and generic deployment documentation.
+It was later substantially modified with a redesigned and generalized interface, expanded Guard handling, RPC proxying, server-side transaction policy, a third-party signer service, configuration validation, tests, and generic deployment documentation.
 
 The current default hero, social preview, icon, and minting animation are newly created generic assets and are not taken from the historical UI or any previous customer collection. Their record is in `ASSET_PROVENANCE.md`.
 
