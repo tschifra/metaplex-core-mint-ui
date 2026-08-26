@@ -129,5 +129,3 @@ export const SocialLinks = ({
     </Flex>
   );
 };
-
-export default SocialLinks;

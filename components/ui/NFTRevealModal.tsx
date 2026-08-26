@@ -16,29 +16,8 @@ import { PublicKey } from '@metaplex-foundation/umi';
 import { JsonMetadata } from '@metaplex-foundation/mpl-token-metadata';
 import { getCoreExplorerUrl } from '../../utils/network';
 import { mintPageUrl, twitterHashtags } from '../../settings';
-
-// Fix image URLs - add Arweave/IPFS prefix if needed
-const fixImageUrl = (url: string | undefined): string => {
-  if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  // Arweave hash (base58 string, may have ?ext=png suffix)
-  if (/^[1-9A-HJ-NP-Za-km-z]{32,}/.test(url)) return `https://arweave.net/${url}`;
-  // IPFS hash
-  if (url.startsWith('Qm') || url.startsWith('bafy')) return `https://ipfs.io/ipfs/${url}`;
-  return url;
-};
-
-// Reliable external URL opener that works in mobile WebViews (Phantom, etc.)
-const openExternalUrl = (url: string) => {
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => document.body.removeChild(a), 100);
-};
+import { buildMintShareUrl, openExternalUrl, resolveAssetUrl } from '../../utils/assetMedia';
+import { useAutoplayVideo } from '../../utils/useAutoplayVideo';
 
 interface NFTData {
   mint: PublicKey;
@@ -211,8 +190,8 @@ const NFTCard = ({
   const metadata: JsonMetadata = nft.offChainMetadata ?? {
     name: 'Mint confirmed',
   };
-  const videoUrl = fixImageUrl(metadata?.animation_url);
-  const imageUrl = fixImageUrl(metadata?.image);
+  const videoUrl = resolveAssetUrl(metadata?.animation_url);
+  const imageUrl = resolveAssetUrl(metadata?.image);
   const isVideo = !videoFailed && !!videoUrl;
 
   useEffect(() => {
@@ -250,44 +229,14 @@ const NFTCard = ({
     };
   }, [startAnimation]);
 
-  // On mobile (especially Phantom WebView), manually trigger video play.
-  // Try multiple times since the video might not be ready immediately.
-  useEffect(() => {
-    if (isVideo && videoRef.current && startAnimation) {
-      const playVideo = () => {
-        const v = videoRef.current;
-        if (v) {
-          // Ensure muted (required for autoplay on mobile)
-          v.muted = true;
-          v.playsInline = true;
-          v.play().catch(() => {});
-        }
-      };
-      // Try at multiple intervals to handle WebView timing quirks
-      const t1 = setTimeout(playVideo, 300);
-      const t2 = setTimeout(playVideo, 800);
-      const t3 = setTimeout(playVideo, 1500);
-      return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-    }
-  }, [isVideo, startAnimation]);
+  useAutoplayVideo(videoRef, isVideo && startAnimation);
 
   // Display URL: video if available, otherwise image
   const displayUrl = isVideo ? videoUrl : imageUrl;
   const attributes = metadata.attributes?.filter((a) => a.trait_type && a.value) || [];
 
   const shareToTwitter = () => {
-    const nftName = metadata.name || 'My NFT';
-    // Prefer animated version (MP4) over static PNG for sharing
-    const animUrl = metadata.animation_url ? fixImageUrl(metadata.animation_url) : '';
-    let mediaForTwitter = animUrl || fixImageUrl(metadata.image || '');
-    if (mediaForTwitter && !mediaForTwitter.includes('?ext=')) {
-      const ext = animUrl ? 'mp4' : 'png';
-      mediaForTwitter = `${mediaForTwitter}?ext=${ext}`;
-    }
-    const hashtags = twitterHashtags.map((tag) => `#${tag}`).join(' ');
-    const tweetText = `Just minted ${nftName}! 🎉\n\n${mediaForTwitter}\n\nMint is Live at: ${mintPageUrl}\n\n${hashtags}`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-    openExternalUrl(twitterUrl);
+    openExternalUrl(buildMintShareUrl(metadata, mintPageUrl, twitterHashtags));
   };
 
   return (
@@ -897,44 +846,17 @@ const MultiNFTCard = ({
   const metadata: JsonMetadata = nft.offChainMetadata ?? {
     name: 'Mint confirmed',
   };
-  const videoUrl = fixImageUrl(metadata?.animation_url);
-  const imageUrl = fixImageUrl(metadata?.image);
+  const videoUrl = resolveAssetUrl(metadata?.animation_url);
+  const imageUrl = resolveAssetUrl(metadata?.image);
   const isVideo = !videoFailed && !!videoUrl;
 
-  // On mobile (especially Phantom WebView), manually trigger video play
-  useEffect(() => {
-    if (isVideo && videoRef.current) {
-      const playVideo = () => {
-        const v = videoRef.current;
-        if (v) {
-          v.muted = true;
-          v.playsInline = true;
-          v.play().catch(() => {});
-        }
-      };
-      const t1 = setTimeout(playVideo, 300);
-      const t2 = setTimeout(playVideo, 800);
-      const t3 = setTimeout(playVideo, 1500);
-      return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-    }
-  }, [isVideo]);
+  useAutoplayVideo(videoRef, isVideo);
 
   // Display URL: video if available, otherwise image
   const displayUrl = isVideo ? videoUrl : imageUrl;
 
   const shareToTwitter = () => {
-    const nftName = metadata.name || 'My NFT';
-    // Prefer animated version (MP4) over static PNG for sharing
-    const animUrl = metadata.animation_url ? fixImageUrl(metadata.animation_url) : '';
-    let mediaForTwitter = animUrl || fixImageUrl(metadata.image || '');
-    if (mediaForTwitter && !mediaForTwitter.includes('?ext=')) {
-      const ext = animUrl ? 'mp4' : 'png';
-      mediaForTwitter = `${mediaForTwitter}?ext=${ext}`;
-    }
-    const hashtags = twitterHashtags.map((tag) => `#${tag}`).join(' ');
-    const tweetText = `Just minted ${nftName}! 🎉\n\n${mediaForTwitter}\n\nMint is Live at: ${mintPageUrl}\n\n${hashtags}`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-    openExternalUrl(twitterUrl);
+    openExternalUrl(buildMintShareUrl(metadata, mintPageUrl, twitterHashtags));
   };
 
   return (
@@ -1156,5 +1078,3 @@ export const NFTRevealModal = ({
     </Box>
   );
 };
-
-export default NFTRevealModal;

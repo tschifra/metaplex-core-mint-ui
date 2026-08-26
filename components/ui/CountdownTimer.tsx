@@ -229,5 +229,3 @@ export const CountdownTimer = memo(({
 });
 
 CountdownTimer.displayName = 'CountdownTimer';
-
-export default CountdownTimer;

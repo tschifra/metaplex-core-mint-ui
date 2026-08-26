@@ -152,5 +152,3 @@ export const MintStats = memo(({ available, total, loading = false }: MintStatsP
 });
 
 MintStats.displayName = 'MintStats';
-
-export default MintStats;

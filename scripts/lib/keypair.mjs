@@ -6,7 +6,7 @@ import bs58 from "bs58";
  * @param {string} label
  * @returns {Uint8Array}
  */
-export function parseSecret(raw, label) {
+function parseSecret(raw, label) {
   const value = raw.trim();
   let secret;
   if (value.startsWith("[")) {

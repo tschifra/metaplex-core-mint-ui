@@ -132,5 +132,3 @@ export const CollectionInfo = memo(({
 });
 
 CollectionInfo.displayName = 'CollectionInfo';
-
-export default CollectionInfo;

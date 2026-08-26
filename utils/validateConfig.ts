@@ -5,9 +5,8 @@ import {
 } from "@metaplex-foundation/mpl-core-candy-machine";
 import { fetchToken } from "@metaplex-foundation/mpl-toolbox";
 import { PublicKey, Some, Umi } from "@metaplex-foundation/umi";
-import { createToaster } from "@chakra-ui/react";
+import { toaster } from "./toaster";
 
-const toaster = createToaster({ placement: "top" });
 
 export const checkAtaValid = (
   umi: Umi,

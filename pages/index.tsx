@@ -10,7 +10,7 @@ import { useUmi } from "../utils/useUmi";
 import { fetchCandyMachine, safeFetchCandyGuard, CandyGuard, CandyMachine } from "@metaplex-foundation/mpl-core-candy-machine"
 import styles from "../styles/Home.module.css";
 import { guardChecker } from "../utils/checkAllowed";
-import { Heading, createToaster, Text, Skeleton, useDisclosure, Button, DialogRoot, DialogContent, DialogCloseTrigger, DialogBody, DialogHeader, DialogBackdrop, Image, Box, VStack, Flex, SimpleGrid } from '@chakra-ui/react';
+import { Heading, Text, Skeleton, useDisclosure, Button, DialogRoot, DialogContent, DialogCloseTrigger, DialogBody, DialogHeader, DialogBackdrop, Image, Box, VStack, Flex, SimpleGrid } from '@chakra-ui/react';
 // useWindowSize from react-use causes re-renders on iOS address bar show/hide
 // Use a stable ref-based approach instead
 
@@ -23,33 +23,23 @@ import {
 import { SocialLinks } from '../components/ui/SocialLinks';
 import { CollectionInfo } from '../components/ui/CollectionInfo';
 
-const toaster = createToaster({ placement: "top" });
-
 import { ButtonList } from "../components/mintButton";
 import { DasApiAssetAndAssetMintLimit, GuardReturn } from "../utils/checkerHelper";
 import { image, headerText, workimage, socialLinks, collectionInfo } from "../settings";
 import { useSolanaTime } from "@/utils/SolanaTimeContext";
 import { useWalletBalance } from '../utils/useWalletBalance';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 import { useMintSound } from '../utils/useMintSound';
 import { parseFeatureEnabled } from '../utils/mintUiConfig';
 import { getMintableGuardGroups } from '../utils/guardResolution';
+import { resolveAssetUrl } from '../utils/assetMedia';
+import { toaster } from '../utils/toaster';
 
 const adminUiEnabled = parseFeatureEnabled(
   process.env.NEXT_PUBLIC_ADMIN_ENABLED,
   false,
   'NEXT_PUBLIC_ADMIN_ENABLED'
 );
-
-// Fix image URLs - add Arweave/IPFS prefix if needed
-const fixImageUrl = (url: string | undefined): string => {
-  if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  if (/^[1-9A-HJ-NP-Za-km-z]{32,}/.test(url)) return `https://arweave.net/${url}`;
-  if (url.startsWith('Qm') || url.startsWith('bafy')) return `https://ipfs.io/ipfs/${url}`;
-  return url;
-};
 
 interface RecentMintAttribute {
   trait_type?: string;
@@ -125,6 +115,25 @@ const GlobalStyles = () => (
       100% {
         opacity: 1;
         transform: scale(1);
+      }
+    }
+    @keyframes modalDramaticEntrance {
+      0% {
+        opacity: 0;
+        transform: scale(0.3) rotateZ(-10deg);
+        filter: blur(20px);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.15) rotateZ(5deg);
+        filter: blur(0);
+      }
+      70% { transform: scale(0.95) rotateZ(-2deg); }
+      85% { transform: scale(1.05) rotateZ(1deg); }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotateZ(0);
+        filter: blur(0);
       }
     }
     @keyframes pulse {
@@ -239,9 +248,7 @@ const GlobalStyles = () => (
 
 const useCandyMachine = (
   umi: Umi,
-  candyMachineId: string,
-  checkEligibility: boolean,
-  setCheckEligibility: Dispatch<SetStateAction<boolean>>,
+  candyMachineId: PublicKey | null,
   firstRun: boolean,
   setfirstRun: Dispatch<SetStateAction<boolean>>
 ) => {
@@ -255,13 +262,7 @@ const useCandyMachine = (
     (async () => {
       if (firstRun) {
         if (!candyMachineId) {
-          toaster.create({
-            id: "no-cm",
-            title: "No candy machine configured!",
-            description: "Set NEXT_PUBLIC_CANDY_MACHINE_ID for this deployment.",
-            type: "error",
-            duration: 999999,
-          });
+          setfirstRun(false);
           return;
         }
 
@@ -279,6 +280,7 @@ const useCandyMachine = (
         }
         setCandyMachine(candyMachine);
         if (!candyMachine) {
+          setfirstRun(false);
           return;
         }
         let candyGuard;
@@ -294,6 +296,7 @@ const useCandyMachine = (
           });
         }
         if (!candyGuard) {
+          setfirstRun(false);
           return;
         }
 
@@ -313,7 +316,6 @@ export default function Home() {
   const { open: isShowNftOpen, onOpen: onShowNftOpen, onClose: onShowNftClose } = useDisclosure();
   const { open: isInitializerOpen, onOpen: onInitializerOpen, onClose: onInitializerClose } = useDisclosure();
   const [mintsCreated, setMintsCreated] = useState<{ mint: PublicKey, offChainMetadata: JsonMetadata | undefined }[] | undefined>();
-  const [, setIsAllowed] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
   const [ownedTokens, setOwnedTokens] = useState<DigitalAssetWithToken[]>();
@@ -348,44 +350,24 @@ export default function Home() {
 
   const wallet = useWallet();
 
-  // Stabilize umiWithWallet to prevent excessive re-renders
-  // Only recreate when wallet.publicKey actually changes, not on every wallet state change
   const walletPublicKey = wallet.publicKey?.toString();
-  const umiWithWallet = useMemo(() => {
-    if (wallet.connected && wallet.publicKey) {
-      return umi.use(walletAdapterIdentity(wallet));
-    }
-    return umi;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [umi, wallet.connected, walletPublicKey]) as Umi;
+  const umiWithWallet = umi;
 
   const { balance: walletBalance, refresh: refreshWalletBalance } = useWalletBalance(umiWithWallet);
 
-  // Track wallet connection state to prevent flickering during transitions
-  const isWalletTransitioning = useRef(false);
-  useEffect(() => {
-    isWalletTransitioning.current = wallet.connecting || wallet.disconnecting;
-  }, [wallet.connecting, wallet.disconnecting]);
-
-  const candyMachineId: PublicKey = useMemo(() => {
+  const candyMachineId = useMemo<PublicKey | null>(() => {
     const cmId = process.env.NEXT_PUBLIC_CANDY_MACHINE_ID;
-
-    if (cmId) {
-      return publicKey(cmId);
-    } else {
-      toaster.create({
-        id: 'no-cm',
-        title: 'No candy machine configured!',
-        description: "Set NEXT_PUBLIC_CANDY_MACHINE_ID for this deployment",
-        type: 'error',
-        duration: 999999,
-      })
-      return publicKey("11111111111111111111111111111111");
-    }
+    return cmId ? publicKey(cmId) : null;
   }, []);
 
-  const { candyMachine, setCandyMachine, candyGuard } = useCandyMachine(umi, candyMachineId, checkEligibility, setCheckEligibility, firstRun, setFirstRun);
+  const { candyMachine, setCandyMachine, candyGuard } = useCandyMachine(umi, candyMachineId, firstRun, setFirstRun);
   const [mintServiceStatus, setMintServiceStatus] = useState<"not-required" | "checking" | "ready" | "unavailable">("not-required");
+
+  useEffect(() => {
+    if (!firstRun && (!candyMachine || !candyGuard)) {
+      setLoading(false);
+    }
+  }, [candyGuard, candyMachine, firstRun]);
 
   useEffect(() => {
     const requiresBackendSigner = Boolean(candyGuard &&
@@ -421,6 +403,7 @@ export default function Home() {
   // Show error toast for missing candy machine config (only once on mount)
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_CANDY_MACHINE_ID) {
+      setLoading(false);
       toaster.create({
         id: 'no-cm',
         title: 'No candy machine configured!',
@@ -457,13 +440,10 @@ export default function Home() {
         );
 
         // Batch all state updates together
-        const allowed = guardReturn.some(guard => guard.allowed);
-
         // Update all states at once to minimize re-renders
         setOwnedTokens(ownedNfts);
         setGuards(guardReturn);
         setOwnedCoreAssets(ownedCoreAssets || []);
-        setIsAllowed(allowed);
       } catch (e) {
         console.error("Eligibility check failed:", e);
         // Don't leave the UI in a broken state - set reasonable defaults
@@ -572,8 +552,6 @@ export default function Home() {
       });
 
       const items = assetList?.items || [];
-      console.log(`[RecentMints] Fetched ${items.length} recent mints`);
-
       // gateway.irys.xyz now 302-redirects metadata to a CDN, which Helius's
       // indexer doesn't follow — DAS returns assets with empty links/attributes.
       // Hydrate those directly from json_uri; browsers follow the redirect fine.
@@ -868,7 +846,6 @@ export default function Home() {
                 umi={umi}
                 ownedTokens={ownedTokens}
                 setGuardList={setGuards}
-                mintsCreated={mintsCreated}
                 setMintsCreated={setMintsCreated}
                 onOpen={onShowNftOpen}
                 setCheckEligibility={setCheckEligibility}
@@ -1185,8 +1162,8 @@ export default function Home() {
                     {(() => {
                       const animUrl = selectedRecentMint.content?.links?.animation_url;
                       const imgUrl = selectedRecentMint.content?.links?.image || selectedRecentMint.content?.files?.[0]?.uri;
-                      const mediaUrl = fixImageUrl(animUrl || imgUrl);
-                      const posterUrl = fixImageUrl(imgUrl);
+                      const mediaUrl = resolveAssetUrl(animUrl || imgUrl);
+                      const posterUrl = resolveAssetUrl(imgUrl);
                       // Treat as video if animation_url exists (regardless of extension)
                       const isVideo = !!animUrl || mediaUrl?.match(/\.(mp4|webm|mov)(\?|$)/i);
 

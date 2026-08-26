@@ -47,7 +47,7 @@ export const createLutForCandyMachineAndGuard = async (
   });
 };
 
-export const getLutAddressesForCandyMachineAndGuard = async (
+const getLutAddressesForCandyMachineAndGuard = async (
   umi: Umi,
   candyMachine: CandyMachine,
   candyGuard: CandyGuard

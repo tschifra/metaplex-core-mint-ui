@@ -19,14 +19,12 @@ import {
   Umi,
   transactionBuilder,
   publicKey,
-  TransactionBuilder,
   none,
   AddressLookupTableInput,
   Transaction,
   Signer,
   createNoopSigner,
   sol,
-  BlockhashWithExpiryBlockHeight,
 } from "@metaplex-foundation/umi";
 import {
   DasApiAssetAndAssetMintLimit,
@@ -443,80 +441,6 @@ export const routeBuilder = async (
     return allowListProof === null ? tx2 : undefined;
   }
   return undefined;
-};
-
-// combine transactions. return TransactionBuilder[]
-export const combineTransactions = (
-  umi: Umi,
-  txs: TransactionBuilder[],
-  tables: AddressLookupTableInput[]
-) => {
-  const returnArray: TransactionBuilder[] = [];
-  let builder = transactionBuilder();
-
-  // combine as many transactions as possible into one
-  for (let i = 0; i <= txs.length - 1; i++) {
-    const tx = txs[i];
-    let oldBuilder = builder;
-    builder = builder.add(tx);
-
-    if (!builder.fitsInOneTransaction(umi)) {
-      oldBuilder = oldBuilder.setAddressLookupTables(tables);
-      returnArray.push(oldBuilder);
-      builder = new TransactionBuilder();
-      builder = builder.add(tx);
-    }
-    if (i === txs.length - 1) {
-      returnArray.push(builder);
-    }
-  }
-  return returnArray;
-};
-
-export const buildTx = (
-  umi: Umi,
-  candyMachine: CandyMachine,
-  candyGuard: CandyGuard,
-  nftMint: Signer,
-  guardToUse:
-    | GuardGroup<DefaultGuardSet>
-    | {
-        label: string;
-        guards: undefined;
-      },
-  mintArgs: Partial<DefaultGuardSetMintArgs> | undefined,
-  luts: AddressLookupTableInput[],
-  latestBlockhash: BlockhashWithExpiryBlockHeight,
-  units: number,
-  buyBeer: boolean
-) => {
-  let tx = transactionBuilder().add(
-    mintV1(umi, {
-      candyMachine: candyMachine.publicKey,
-      collection: candyMachine.collectionMint,
-      asset: nftMint,
-      group: guardToUse.label === "default" ? none() : some(guardToUse.label),
-      candyGuard: candyGuard.publicKey,
-      mintArgs,
-    })
-  );
-  if (buyBeer) {
-    tx = tx.prepend(
-      transferSol(umi, {
-        destination: publicKey(DEVELOPER_FEE_RECIPIENT),
-        amount: sol(DEVELOPER_FEE_SOL),
-      })
-    );
-  }
-  tx = tx.prepend(setComputeUnitLimit(umi, { units }));
-  tx = tx.prepend(
-    setComputeUnitPrice(umi, {
-      microLamports: parsePriorityFeeMicroLamports(),
-    })
-  );
-  tx = tx.setAddressLookupTables(luts);
-  tx = tx.setBlockhash(latestBlockhash);
-  return tx.build(umi);
 };
 
 export const buildTxs = async (

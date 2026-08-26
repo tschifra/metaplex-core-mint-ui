@@ -25,14 +25,12 @@ import {
   VStack,
   HStack,
   Button,
-  createToaster,
 } from "@chakra-ui/react";
 
 // Modern UI Components
 import { PremiumMintButton, CountdownTimer } from "./ui";
 import { fetchAddressLookupTable } from "@metaplex-foundation/mpl-toolbox";
 
-const toaster = createToaster({ placement: "top" });
 import { Dispatch, SetStateAction, useState } from "react";
 import {
   chooseGuardToUse,
@@ -72,6 +70,7 @@ import {
   parseFallbackMintPrice,
 } from "../utils/mintUiConfig";
 import { getMintableGuardGroup } from "../utils/guardResolution";
+import { toaster } from "../utils/toaster";
 
 const solAmountToSol = (amount: SolAmount | bigint): number =>
   Number(typeof amount === "bigint" ? amount : amount.basisPoints) / 1e9;
@@ -191,12 +190,6 @@ const mintClick = async (
   candyGuard: CandyGuard,
   ownedTokens: DigitalAssetWithToken[],
   mintAmount: number,
-  mintsCreated:
-    | {
-        mint: PublicKey;
-        offChainMetadata: JsonMetadata | undefined;
-      }[]
-    | undefined,
   setMintsCreated: Dispatch<
     SetStateAction<
       | { mint: PublicKey; offChainMetadata: JsonMetadata | undefined }[]
@@ -439,8 +432,6 @@ const mintClick = async (
             maxRetries: 3,
             preflightCommitment: "confirmed",
           });
-          console.log(`[Mint] TX ${index + 1} sent via wallet adapter:`, sigString);
-
           // Convert base58 string back to Uint8Array for verifyTx
           const sigBytes = base58.serialize(sigString);
           signatures.push(sigBytes);
@@ -498,7 +489,6 @@ const mintClick = async (
     if (signatures.length === 0) {
       throw new Error("no tx was created");
     }
-    console.log("[Mint] TX sent, signature:", base58.deserialize(signatures[0])?.[0]);
     updateLoadingText(
       `confirming transaction(s)`,
       guardList,
@@ -604,12 +594,6 @@ type Props = {
   candyGuard: CandyGuard | undefined;
   ownedTokens: DigitalAssetWithToken[] | undefined;
   setGuardList: Dispatch<SetStateAction<GuardReturn[]>>;
-  mintsCreated:
-    | {
-        mint: PublicKey;
-        offChainMetadata: JsonMetadata | undefined;
-      }[]
-    | undefined;
   setMintsCreated: Dispatch<
     SetStateAction<
       | { mint: PublicKey; offChainMetadata: JsonMetadata | undefined }[]
@@ -638,7 +622,6 @@ export const ButtonList: React.FC<Props> = ({
   candyGuard,
   ownedTokens = [], // provide default empty array
   setGuardList,
-  mintsCreated,
   setMintsCreated,
   onOpen,
   setCheckEligibility,
@@ -1029,7 +1012,6 @@ export const ButtonList: React.FC<Props> = ({
                 candyGuard,
                 ownedTokens,
                 mintAmount,
-                mintsCreated,
                 setMintsCreated,
                 guardList,
                 setGuardList,

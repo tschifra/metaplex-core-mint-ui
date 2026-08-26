@@ -4,9 +4,8 @@ import {
   TransactionWithMeta,
   Umi,
 } from "@metaplex-foundation/umi";
-import { createToaster } from "@chakra-ui/react";
+import { toaster } from "./toaster";
 
-const toaster = createToaster({ placement: "top" });
 
 const detectBotTax = (logs: string[]) => {
   if (logs.find((l) => l.includes("Candy Guard Botting"))) {

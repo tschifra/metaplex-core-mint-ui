@@ -17,25 +17,34 @@ export const UmiProvider = ({
   children: ReactNode;
 }) => {
   const wallet = useWallet();
+  const walletIdentity = useMemo(() => ({
+    publicKey: wallet.publicKey,
+    signMessage: wallet.signMessage,
+    signTransaction: wallet.signTransaction,
+    signAllTransactions: wallet.signAllTransactions,
+  }), [
+    wallet.publicKey,
+    wallet.signAllTransactions,
+    wallet.signMessage,
+    wallet.signTransaction,
+  ]);
 
-  // Memoize the base Umi instance - only recreate when endpoint changes
-  const baseUmi = useMemo(() => {
-    return createUmi(endpoint)
+  // Umi plugins mutate their host instance. Build a fresh client when the
+  // endpoint or wallet context changes so stale identities are never reused.
+  const umi = useMemo(() => {
+    const nextUmi = createUmi(endpoint)
       .use(mplTokenMetadata())
       .use(mplCore())
       .use(mplCandyMachine())
       .use(dasApi());
-  }, [endpoint]);
 
-  // Memoize the final Umi with identity - recreate when wallet connection changes
-  const umi = useMemo(() => {
-    if (wallet.publicKey === null) {
+    if (walletIdentity.publicKey === null) {
       const noopSigner = createNoopSigner(publicKey("11111111111111111111111111111111"));
-      return baseUmi.use(signerIdentity(noopSigner));
-    } else {
-      return baseUmi.use(walletAdapterIdentity(wallet));
+      return nextUmi.use(signerIdentity(noopSigner));
     }
-  }, [baseUmi, wallet]);
+
+    return nextUmi.use(walletAdapterIdentity(walletIdentity));
+  }, [endpoint, walletIdentity]);
 
   return <UmiContext.Provider value={{ umi }}>{children}</UmiContext.Provider>;
 };

@@ -19,7 +19,6 @@ import {
 import {
   Pda,
   PublicKey,
-  SolAmount,
   Some,
   Umi,
   isSome,
@@ -27,12 +26,10 @@ import {
 } from "@metaplex-foundation/umi";
 import { parseMaxMintAmount } from "./mintUiConfig";
 import { DigitalAssetWithToken } from "@metaplex-foundation/mpl-token-metadata";
-import { createToaster } from "@chakra-ui/react";
-
-const toaster = createToaster({ placement: "top" });
-import { DasExtra } from "@metaplex-foundation/mpl-core-das/dist/src/types";
+import type { DasApiAssetContent } from "@metaplex-foundation/digital-asset-standard-api";
 import { AssetV1 } from "@metaplex-foundation/mpl-core";
 import { coreAssetMatchesCollection } from "./coreAssetSelection";
+import { toaster } from "./toaster";
 
 export interface GuardReturn {
   label: string;
@@ -48,7 +45,17 @@ export type DigitalAssetWithTokenAndNftMintLimit = DigitalAssetWithToken & {
   nftMintLimitPda?: Pda;
 };
 
-export type DasApiAssetAndAssetMintLimit = AssetV1 & DasExtra & {
+type DasAssetMetadata = {
+  content: DasApiAssetContent;
+  collection_metadata?: {
+    name: string;
+    symbol: string;
+    description: string;
+    image: string;
+  };
+};
+
+export type DasApiAssetAndAssetMintLimit = AssetV1 & DasAssetMetadata & {
   assetMintLimit?: number;
   assetMintLimitPda?: Pda;
 }
@@ -95,19 +102,8 @@ export const allocationChecker = async (
   }
 };
 
-export const solBalanceChecker = (
-  solBalance: SolAmount,
-  solAmount: SolAmount
-) => {
-  if (solAmount > solBalance) {
-    return false;
-  }
-  return true;
-};
-
 export const tokenBalanceChecker = async (
   umi: Umi,
-  tokenAmount: bigint,
   tokenMint: PublicKey,
   tokenProgramId?: PublicKey
 ): Promise<bigint> => {
@@ -346,7 +342,7 @@ export const allowlistChecker = (
   guardlabel: string
 ) => {
   if (!allowLists.has(guardlabel)) {
-    // Allowlist missing from allowlist.tsx
+    // Allowlist missing from allowlist.ts
     return false;
   }
   if (
@@ -364,18 +360,6 @@ export const getSolanaTime = async (umi: Umi) => {
 
   if (!solanaTime) solanaTime = BigInt(0);
   return solanaTime;
-};
-
-export const checkDateRequired = (
-  guards: { label: string; guards: GuardSet }[]
-) => {
-  for (const guard of guards) {
-    if (isSome(guard.guards.startDate) || isSome(guard.guards.endDate)) {
-      return true;
-    }
-  }
-
-  return false;
 };
 
 export const checkSolBalanceRequired = (

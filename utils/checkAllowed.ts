@@ -380,7 +380,6 @@ export const guardChecker = async (
         singleGuard.freezeTokenPayment as Some<FreezeTokenPayment>;
       const tokenBalance = await tokenBalanceChecker(
         umi,
-        freezeTokenPayment.value.amount,
         freezeTokenPayment.value.mint
       );
       if (tokenBalance < freezeTokenPayment.value.amount) {
@@ -574,7 +573,6 @@ export const guardChecker = async (
       const tokenBurn = singleGuard.tokenBurn as Some<TokenBurn>;
       const tokenBalance = await tokenBalanceChecker(
         umi,
-        tokenBurn.value.amount,
         tokenBurn.value.mint
       );
       if (tokenBalance < tokenBurn.value.amount) {
@@ -595,7 +593,6 @@ export const guardChecker = async (
       // Check SPL token balance using tokenBalanceChecker
       const tokenBalance = await tokenBalanceChecker(
         umi,
-        tokenGate.value.amount,
         tokenGate.value.mint
       );
       if (tokenBalance < tokenGate.value.amount) {
@@ -613,7 +610,6 @@ export const guardChecker = async (
       const tokenPayment = singleGuard.tokenPayment as Some<TokenPayment>;
       const tokenBalance = await tokenBalanceChecker(
         umi,
-        tokenPayment.value.amount,
         tokenPayment.value.mint
       );
       if (tokenBalance < tokenPayment.value.amount) {
@@ -634,7 +630,6 @@ export const guardChecker = async (
         singleGuard.token2022Payment as Some<TokenPayment>;
       const tokenBalance = await tokenBalanceChecker(
         umi,
-        token2022Payment.value.amount,
         token2022Payment.value.mint,
         TOKEN_2022_PROGRAM_ID
       );
@@ -715,7 +710,7 @@ export const guardChecker = async (
     let lacksRequiredTokens = false;
     for (const { amount, mint } of tokenCosts.values()) {
       if (amount === BigInt(0)) continue;
-      const balance = await tokenBalanceChecker(umi, amount, mint);
+      const balance = await tokenBalanceChecker(umi, mint);
       const possibleMints = Number(balance / amount);
       mintableAmount = calculateMintable(mintableAmount, possibleMints);
       if (possibleMints < 1) lacksRequiredTokens = true;

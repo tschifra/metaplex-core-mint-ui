@@ -77,7 +77,7 @@ The on-chain supply and Guard limits always override UI quantities. The progress
 
 ## Theme
 
-The default theme is a neutral dark purple design. Global tokens and animations are in `styles/modern-theme.css`, `styles/globals.css`, and `styles/nft-animations.css`. Components also contain local Chakra style props. If changing colors, verify contrast, wallet modal readability, mobile layouts, success/error states, and reduced-motion behavior.
+The default theme is a neutral dark purple design. Global tokens and shared animations are in `styles/modern-theme.css` and `styles/globals.css`; feature-specific motion stays beside the component that uses it. Components also contain local Chakra style props. If changing colors, verify contrast, wallet modal readability, mobile layouts, success/error states, and reduced-motion behavior.
 
 ## Optional fixed developer fee
 

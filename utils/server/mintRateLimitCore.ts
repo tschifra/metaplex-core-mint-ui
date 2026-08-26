@@ -1,4 +1,4 @@
-export type MintRateLimitScope = "ip" | "payer";
+type MintRateLimitScope = "ip" | "payer";
 
 export type MintRateLimitResult = {
   allowed: boolean;

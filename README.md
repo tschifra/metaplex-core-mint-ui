@@ -100,7 +100,7 @@ Use an `allowList` Guard only for a presale or another phase restricted to appro
 
 If your Guard uses `allowList`:
 
-1. Add wallet addresses to [allowlist.tsx](./allowlist.tsx).
+1. Add wallet addresses to [allowlist.ts](./allowlist.ts).
 2. Use a map key that exactly matches the on-chain Guard group label. Use `default` only when the Guard has no named groups.
 3. Configure the on-chain Guard with the Merkle root generated from the same list.
 4. Rebuild and deploy the UI.

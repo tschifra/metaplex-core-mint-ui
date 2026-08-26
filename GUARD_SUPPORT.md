@@ -40,7 +40,7 @@ Custom on-chain Guards are unsupported until explicitly added to the client. A c
 
 ## Allowlists
 
-`allowlist.tsx` ships empty. The map key must exactly match a Guard group label; use `default` only when the Guard has no named groups. Its addresses must be the source used for the on-chain Merkle root. The UI sends the proof route when a proof account does not already exist.
+`allowlist.ts` ships empty. The map key must exactly match a Guard group label; use `default` only when the Guard has no named groups. Its addresses must be the source used for the on-chain Merkle root. The UI sends the proof route when a proof account does not already exist.
 
 ## Groups and inheritance
 

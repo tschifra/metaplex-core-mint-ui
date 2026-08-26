@@ -8,13 +8,13 @@ import { UmiProvider } from "../utils/UmiProvider";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import "@/styles/globals.css";
 import "@/styles/modern-theme.css";
-import "@/styles/nft-animations.css";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { ChakraProvider, createSystem, defaultConfig } from '@chakra-ui/react';
 import { headerText, mintPageUrl } from 'settings';
 import { SolanaTimeProvider } from "@/utils/SolanaTimeContext";
 import { getActiveRpc } from "@/utils/configManager";
 import { publicConfig } from "@/utils/publicConfig";
+import { AppToaster } from "@/components/ui/AppToaster";
 
 const audiowide = Audiowide({
   weight: "400",
@@ -124,6 +124,7 @@ export default function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
       <ChakraProvider value={system}>
+        <AppToaster />
         {publicConfig.backgroundVideo && (
           <video
             className="video-background"

@@ -25,7 +25,7 @@ export type CoreAssetRequirement = {
   assetsPerMint: number;
 };
 
-export const coreAssetCollection = (
+const coreAssetCollection = (
   asset: DasApiAssetAndAssetMintLimit
 ): string => {
   const updateAuthority = asset.updateAuthority;

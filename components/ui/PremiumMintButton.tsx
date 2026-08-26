@@ -298,5 +298,3 @@ export const PremiumMintButton = memo(({
 });
 
 PremiumMintButton.displayName = 'PremiumMintButton';
-
-export default PremiumMintButton;

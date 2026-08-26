@@ -5,6 +5,7 @@ import { Box, Flex, VStack, Text, Image } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { GlassCard } from './GlassCard';
+import { resolveAssetUrl } from '../../utils/assetMedia';
 
 interface NFTMint {
   content?: {
@@ -25,25 +26,6 @@ interface RecentMintsGalleryProps {
 
 const MotionBox = motion(Box);
 const MotionImage = motion(Image);
-
-// Single mint card with hover preview
-// Fix image URLs - add Arweave prefix if needed
-const fixImageUrl = (url: string | undefined): string => {
-  if (!url) return '';
-  // Already a full URL
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    return url;
-  }
-  // Arweave hash (base58 string)
-  if (/^[1-9A-HJ-NP-Za-km-z]{32,}/.test(url)) {
-    return `https://arweave.net/${url}`;
-  }
-  // IPFS hash
-  if (url.startsWith('Qm') || url.startsWith('bafy')) {
-    return `https://ipfs.io/ipfs/${url}`;
-  }
-  return url;
-};
 
 // Detect mobile for video optimization
 const useIsMobile = () => {
@@ -72,8 +54,8 @@ const MintCard = ({
   const animationUrl = mint.content?.links?.animation_url;
   const staticImageUrl = mint.content?.links?.image || mint.content?.files?.[0]?.uri || '';
   const rawMediaUrl = animationUrl || staticImageUrl;
-  const mediaUrl = fixImageUrl(rawMediaUrl);
-  const posterUrl = fixImageUrl(staticImageUrl);
+  const mediaUrl = resolveAssetUrl(rawMediaUrl);
+  const posterUrl = resolveAssetUrl(staticImageUrl);
   const isVideo = mediaUrl?.match(/\.(mp4|webm|mov)(\?|$)/i) ||
     (animationUrl && !animationUrl.match(/\.(gif|png|jpg|jpeg|webp|svg)(\?|$)/i));
   const name = mint.content?.metadata?.name || `NFT #${index + 1}`;
@@ -392,5 +374,3 @@ export const RecentMintsGallery = ({
     </Box>
   );
 };
-
-export default RecentMintsGallery;

@@ -7,7 +7,6 @@ import {
   HStack,
   Input,
   Separator,
-  createToaster,
 } from "@chakra-ui/react";
 import {
   Umi,
@@ -32,13 +31,11 @@ import {
 import { buildDualPricingConfig } from "../utils/dualPricing";
 import { parsePriorityFeeMicroLamports } from "../utils/mintUiConfig";
 
-// Create toaster at module level for proper Chakra UI v3 usage
-const toaster = createToaster({ placement: "top" });
+import { toaster } from "../utils/toaster";
 
 // Update candy guard with dual pricing
 const updateDualPricing = async (
   umi: Umi,
-  candyMachine: CandyMachine,
   candyGuard: CandyGuard,
   publicPrice: number,
   holderPrice: number,
@@ -70,7 +67,6 @@ const updateDualPricing = async (
 
     const treasury = publicKey(treasuryAddressStr);
     const tokenMint = publicKey(discountTokenMint);
-    console.log('[DualPricing] Treasury address:', treasury.toString());
 
     const updatedConfig = buildDualPricingConfig(
       candyGuard,
@@ -113,25 +109,10 @@ const updateDualPricing = async (
     const requiredCu = await getRequiredCU(umi, builder.build(umi));
     builder = builder.prepend(setComputeUnitLimit(umi, { units: requiredCu }));
 
-    console.log('[DualPricing] Sending updateCandyGuard transaction...');
-    const result = await builder.sendAndConfirm(umi, {
+    await builder.sendAndConfirm(umi, {
       confirm: { commitment: "finalized" },
       send: { skipPreflight: false },
     });
-    console.log('[DualPricing] Transaction signature:', result.signature);
-    console.log('[DualPricing] Transaction result:', result.result);
-
-    // Verify the update by re-fetching the candy guard
-    const { safeFetchCandyGuard } = await import("@metaplex-foundation/mpl-core-candy-machine");
-    const updatedGuard = await safeFetchCandyGuard(umi, candyGuard.publicKey);
-    console.log('[DualPricing] Updated guard groups:', updatedGuard?.groups?.map(g => ({
-      label: g.label,
-      hasSolPayment: g.guards.solPayment.__option === "Some",
-      solPaymentLamports: g.guards.solPayment.__option === "Some"
-        ? g.guards.solPayment.value.lamports.basisPoints.toString()
-        : 'N/A',
-      hasAssetGate: g.guards.assetGate.__option === "Some",
-    })));
 
     setStatus("✅ Dual pricing configured successfully! Reloading...");
     toaster.create({
@@ -666,7 +647,6 @@ export const InitializeModal = ({ umi, candyMachine, candyGuard }: Props) => {
               onClick={() =>
                 updateDualPricing(
                   umi,
-                  candyMachine,
                   candyGuard,
                   parseFloat(publicPrice),
                   parseFloat(holderPrice),
@@ -713,7 +693,7 @@ export const InitializeModal = ({ umi, candyMachine, candyGuard }: Props) => {
 
         {rootElements.length > 0 && (
           <>
-            <Text fontWeight="bold" color="white" mt={4}>Merkle trees for your allowlist.tsx:</Text>
+            <Text fontWeight="bold" color="white" mt={4}>Merkle trees for your allowlist.ts:</Text>
             <VStack align="stretch" gap={2}>
               {rootElements.map((element) => (
                 <Box

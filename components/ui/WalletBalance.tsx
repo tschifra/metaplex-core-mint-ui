@@ -80,5 +80,3 @@ export const WalletBalance = memo(({ balance, loading = false }: WalletBalancePr
 });
 
 WalletBalance.displayName = 'WalletBalance';
-
-export default WalletBalance;

@@ -78,7 +78,7 @@ This Guard does not select the minted item and does not provide randomness. An a
 
 For each Allow List group:
 
-1. Add the exact wallet list to `allowlist.tsx` under the exact group label. Use `default` only for a Guard without named groups.
+1. Add the exact wallet list to `allowlist.ts` under the exact group label. Use `default` only for a Guard without named groups.
 2. Generate the Merkle root from that same list. When the admin panel is enabled, it displays roots for the compiled lists.
 3. Configure the on-chain group’s `allowList.merkleRoot` to that root.
 4. Re-run the build and deploy.

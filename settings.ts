@@ -22,18 +22,8 @@ export function getMintText(label: string) {
 
 export const image = publicConfig.heroImage;
 export const workimage = publicConfig.workingImage;
-
-//website title
 export const headerText = publicConfig.siteName;
-
-//mint page URL for Twitter sharing
 export const mintPageUrl = publicConfig.siteUrl;
-
-//Twitter hashtags for sharing (without #)
 export const twitterHashtags = publicConfig.shareHashtags;
-
-// Social links (leave empty string "" to hide)
 export const socialLinks = publicConfig.socialLinks;
-
-// Collection info
 export const collectionInfo = publicConfig.collection;
