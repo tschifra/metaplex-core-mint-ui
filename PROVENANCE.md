@@ -10,11 +10,8 @@ It was later substantially modified, including migration to Metaplex Core Candy 
 
 The current default hero, social preview, icon, and minting animation are newly created generic assets and are not taken from the historical UI or any previous customer collection. Their record is in `ASSET_PROVENANCE.md`.
 
-At the time of review, the historical upstream repository did not provide an identifiable software license granting redistribution or commercial-use rights. Public source availability and GitHub fork functionality are not substitutes for a license.
+The historical upstream repository does not provide a general software license. On August 26, 2026, Mark Sackerberg directly confirmed to this project's owner that this modified project may be made and shared. The owner retains the permission record privately.
 
-Consequently, this repository intentionally has no asserted open-source license. Before public redistribution, template sales, or commercial customer use, either:
+That permission covers publication of this repository by its owner. It does not create a general open-source license or automatically grant downstream users a right to relicense the upstream-derived portions. This repository therefore intentionally has no asserted MIT, Apache, GPL, or other open-source license at this time.
 
-1. obtain an appropriate license/permission covering the derived portions; or
-2. independently replace the remaining derived implementation and document that clean-room work.
-
-Keep this notice accurate. Do not add an MIT, Apache, GPL, or other license until the project owner has confirmed the necessary rights.
+Before relicensing the complete repository or granting broad sublicensing rights, obtain explicit license terms covering the upstream-derived portions or independently replace those portions and document the clean-room work.
