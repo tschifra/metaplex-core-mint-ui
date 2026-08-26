@@ -1,0 +1,53 @@
+name: Setup question
+description: Ask for help configuring or deploying Core Mint UI.
+title: "[Setup]: "
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read the documentation and search existing issues first. Share public configuration only. Never include seed phrases, private keys, signer secrets, or private RPC URLs.
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic
+      options:
+        - Local installation
+        - Environment configuration
+        - Candy Machine or Candy Guard
+        - Vercel deployment
+        - Wallet integration
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to achieve?
+    validations:
+      required: true
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What have you already tried?
+      description: Link the relevant documentation and include sanitized commands or errors.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Provide Node.js version, operating system, deployment platform, cluster, and public package versions.
+      render: shell
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I searched existing issues and reviewed the relevant repository documentation.
+          required: true
+        - label: I removed all secrets, private endpoints, and private wallet material.
+          required: true

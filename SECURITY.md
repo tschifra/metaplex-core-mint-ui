@@ -73,4 +73,8 @@ As of 2026-08-26, `npm audit --omit=dev` reports four high-severity paths to `im
 
 ## Reporting vulnerabilities
 
-Before making this repository public, replace this section with the project’s private security contact or GitHub Security Advisory process. Do not request wallet seed phrases, private keys, or live unauthorized transactions in a vulnerability report.
+Report exploitable vulnerabilities privately through the repository's [GitHub Security Advisory form](https://github.com/tschifra/metaplex-core-mint-ui/security/advisories/new). Do not disclose the issue publicly before the maintainer has had a reasonable opportunity to investigate it.
+
+Include the affected commit or version, impact, prerequisites, a minimal safe reproduction, and any suggested mitigation. Use devnet, a local validator, or transaction simulation whenever possible. Never include seed phrases, private keys, signer secrets, private RPC credentials, or unauthorized live transactions.
+
+Use [public GitHub issues](https://github.com/tschifra/metaplex-core-mint-ui/issues/new/choose) for ordinary setup questions, non-sensitive bugs, and feature requests.

@@ -1,0 +1,76 @@
+name: Bug report
+description: Report a reproducible problem with Core Mint UI.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Core Mint UI. Search existing issues first. Never include private keys, seed phrases, signer secrets, or private RPC credentials.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: The release, branch, or commit hash where the problem occurs.
+      placeholder: main at abc1234
+    validations:
+      required: true
+  - type: dropdown
+    id: cluster
+    attributes:
+      label: Solana cluster
+      options:
+        - Local validator
+        - Devnet
+        - Mainnet beta
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: wallet
+    attributes:
+      label: Wallet and browser
+      description: Public wallet application name and browser only. Do not provide wallet secrets.
+      placeholder: Phantom 26.x, Chrome 140
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem
+      description: What happened, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest safe sequence that consistently reproduces the problem.
+      placeholder: |
+        1. Connect a devnet wallet
+        2. Select the public Guard group
+        3. Click Mint
+        4. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: guards
+    attributes:
+      label: Relevant Guard configuration
+      description: List Guard names and public addresses only. Redact all secrets and private endpoints.
+      render: shell
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs or screenshots
+      description: Remove secrets, private endpoints, personal data, and unrelated wallet activity.
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed all seed phrases, private keys, signer secrets, and private RPC credentials.
+          required: true
+        - label: This report does not disclose an exploitable vulnerability; sensitive security reports go through GitHub Security Advisories.
+          required: true

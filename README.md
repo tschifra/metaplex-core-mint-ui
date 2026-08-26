@@ -191,6 +191,14 @@ Yes. The repository includes Vercel-oriented environment templates, same-origin 
 
 No. Create the collection, Core Candy Machine, Candy Guard, and items first with official Metaplex tooling. This repository provides the customer-facing mint website and limited authority-only administration helpers.
 
+## Support and contact
+
+- For setup questions, suspected bugs, and feature requests, [open a GitHub issue](https://github.com/tschifra/metaplex-core-mint-ui/issues/new/choose).
+- Search the [existing issues](https://github.com/tschifra/metaplex-core-mint-ui/issues) before opening a new one.
+- Report exploitable security vulnerabilities privately through [GitHub Security Advisories](https://github.com/tschifra/metaplex-core-mint-ui/security/advisories/new), not through a public issue.
+
+This is a community project and not official Metaplex support. Never post seed phrases, private keys, signer secrets, private RPC credentials, or unauthorized live transactions in an issue or security report.
+
 ## Support this project
 
 Core Mint UI includes an optional **Buy me a beer** function that adds a 0.0065 SOL support transfer to each mint transaction. Leaving it enabled helps fund continued maintenance:

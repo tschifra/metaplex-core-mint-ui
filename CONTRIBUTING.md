@@ -30,7 +30,7 @@ Keep the default repository collection-neutral. New branding should be configura
 
 ## Security reports
 
-Do not open a public issue for an exploitable vulnerability. Use the repository’s private GitHub Security Advisory flow after it has been enabled by the owner. Never include seed phrases, private keys, or unauthorized live transactions.
+Do not open a public issue for an exploitable vulnerability. Use the repository's [private GitHub Security Advisory form](https://github.com/tschifra/metaplex-core-mint-ui/security/advisories/new). Never include seed phrases, private keys, signer secrets, private RPC credentials, or unauthorized live transactions.
 
 ## Licensing
 
