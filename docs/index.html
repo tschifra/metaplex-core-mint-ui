@@ -55,12 +55,19 @@
       .card { padding: 22px; border: 1px solid #ffffff15; border-radius: 18px; background: linear-gradient(145deg, #171521cc, #0d0c13cc); }
       .card h3 { margin-top: 0; }
       .card p, .muted { color: #aaa5b8; }
+      .flow-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      .flow-card { margin: 0; overflow: hidden; border: 1px solid #ffffff15; border-radius: 18px; background: linear-gradient(145deg, #171521cc, #0d0c13cc); }
+      .flow-card picture, .flow-card img { display: block; width: 100%; }
+      .flow-card img { aspect-ratio: 4 / 3; object-fit: contain; background: #050508; }
+      .flow-card figcaption { padding: 18px 20px 20px; }
+      .flow-card strong { display: block; margin-bottom: 4px; font-size: 1.05rem; }
+      .flow-card span { color: #aaa5b8; }
       pre { overflow-x: auto; padding: 20px; border: 1px solid #ffffff15; border-radius: 15px; background: #050508; color: #c4b5fd; }
       details { padding: 17px 0; border-bottom: 1px solid #ffffff16; }
       summary { cursor: pointer; font-weight: 750; }
       footer { padding: 35px 0 55px; color: #8e899c; border-top: 1px solid #ffffff12; }
       a { color: #b9a5ff; }
-      @media (max-width: 760px) { header { padding-top: 58px; } .grid { grid-template-columns: 1fr; } }
+      @media (max-width: 760px) { header { padding-top: 58px; } .grid, .flow-grid { grid-template-columns: 1fr; } }
     </style>
   </head>
   <body>
@@ -78,7 +85,10 @@
         </div>
       </header>
 
-      <img class="preview" src="screenshots/site-overview.png" alt="Metaplex Core Mint UI mint page preview" width="1200" height="675" />
+      <picture>
+        <source media="(prefers-reduced-motion: reduce)" srcset="screenshots/site-overview.png" />
+        <img class="preview" src="screenshots/mint-page-loop.webp" alt="Animated Metaplex Core Mint UI mint page preview" width="650" height="380" fetchpriority="high" />
+      </picture>
 
       <section aria-labelledby="features">
         <h2 id="features">A complete Core Candy Machine frontend</h2>
@@ -86,6 +96,27 @@
           <article class="card"><h3>Candy Guard support</h3><p>Guard groups, allowlists, payments, dates, mint limits, token gates, NFT gates, Core asset gates, burns, and payments.</p></article>
           <article class="card"><h3>Production controls</h3><p>Same-origin RPC proxy, method filtering, rate limits, configuration checks, signer health, transaction policy, and simulation.</p></article>
           <article class="card"><h3>Customizable mint UX</h3><p>Environment-driven branding, wallet connection, multi-mint, recent mints, animated progress, reveal modal, and responsive layouts.</p></article>
+        </div>
+      </section>
+
+      <section aria-labelledby="flow">
+        <h2 id="flow">See the complete mint flow</h2>
+        <p class="muted">The real interface keeps buyers informed from transaction submission through the final Core asset reveal.</p>
+        <div class="flow-grid">
+          <figure class="flow-card">
+            <picture>
+              <source media="(prefers-reduced-motion: reduce)" srcset="screenshots/minting-progress.png" />
+              <img src="screenshots/minting-progress-loop.webp" alt="Animated Metaplex Core mint transaction progress modal" width="520" height="390" loading="lazy" decoding="async" />
+            </picture>
+            <figcaption><strong>Transaction progress</strong><span>Clear signing, authorization, submission, and confirmation states.</span></figcaption>
+          </figure>
+          <figure class="flow-card">
+            <picture>
+              <source media="(prefers-reduced-motion: reduce)" srcset="screenshots/minted-nft-modal.png" />
+              <img src="screenshots/minted-nft-loop.webp" alt="Animated Metaplex Core minted asset reveal with confetti" width="650" height="380" loading="lazy" decoding="async" />
+            </picture>
+            <figcaption><strong>Core asset reveal</strong><span>Immediate confirmed asset display while off-chain metadata finishes loading.</span></figcaption>
+          </figure>
         </div>
       </section>
 
