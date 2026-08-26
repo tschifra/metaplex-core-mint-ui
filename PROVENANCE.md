@@ -1,8 +1,10 @@
-# Provenance and licensing
+# Provenance, credits, and licensing
 
-The initial UI lineage was derived from:
+Core Mint UI is a substantially modified fork of:
 
 - `https://github.com/MarkSackerberg/umi-cmv3-ui-inofficial`
+
+Thank you to Mark Sackerberg for creating and sharing the initial unofficial Candy Machine UI that helped start this project.
 
 It was later substantially modified, including migration to Metaplex Core Candy Machine, a new interface, Guard support, RPC proxying, server-side transaction policy, third-party signer service, configuration validation, tests, and generic deployment documentation.
 

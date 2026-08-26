@@ -567,7 +567,7 @@ export const buildTxs = async (
       builder = builder.add(addMemo(umi, { memo: authorizationMemos[i] }));
     }
 
-    // Add beer tip (split per mint)
+    // Add the optional project-support transfer once per mint transaction.
     if (buyBeer) {
       builder = builder.add(
         transferSol(umi, {

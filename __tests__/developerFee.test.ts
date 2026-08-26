@@ -1,5 +1,6 @@
 import {
   DEVELOPER_FEE_LAMPORTS,
+  DEVELOPER_FEE_RECIPIENT,
   DEVELOPER_FEE_SOL,
   getDeveloperFeeLamports,
   getDeveloperFeeSol,
@@ -19,6 +20,12 @@ describe("developer fee configuration", () => {
     expect(isDeveloperFeeEnabled()).toBe(true);
     expect(getDeveloperFeeLamports()).toBe(BigInt(DEVELOPER_FEE_LAMPORTS));
     expect(getDeveloperFeeSol()).toBe(DEVELOPER_FEE_SOL);
+  });
+
+  it("uses the documented project support wallet", () => {
+    expect(DEVELOPER_FEE_RECIPIENT).toBe(
+      "E4jpuwa7ppY2hmF2RWcfYrQ2FAXfLeVwPVGZZJVq9sk5"
+    );
   });
 
   it("returns zero when disabled", () => {

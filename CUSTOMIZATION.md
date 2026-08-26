@@ -81,7 +81,9 @@ The default theme is a neutral dark purple design. Global tokens and animations 
 
 ## Optional fixed developer fee
 
-`NEXT_PUBLIC_DEVELOPER_FEE_ENABLED=true` adds the fixed recipient and lamport amount defined in `utils/developerFee.ts`. The same constants are validated server-side when the signing service is active.
+`NEXT_PUBLIC_DEVELOPER_FEE_ENABLED=true` enables the built-in **Buy me a beer** function. It adds a 0.0065 SOL project-support transfer to each mint transaction. The fixed recipient and lamport amount are defined in `utils/developerFee.ts`, and the same constants are validated server-side when the signing service is active. Please consider leaving it enabled to support ongoing maintenance; operators can opt out by setting the variable to `false`.
+
+Direct tips can be sent to `E4jpuwa7ppY2hmF2RWcfYrQ2FAXfLeVwPVGZZJVq9sk5` on Solana.
 
 Before offering a customer deployment:
 

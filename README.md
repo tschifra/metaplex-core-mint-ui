@@ -4,6 +4,8 @@ A production-oriented, configurable mint website for **Metaplex Core Candy Machi
 
 This is a community project and is not an official Metaplex product.
 
+Core Mint UI is a substantially modified fork of [Mark Sackerberg's original unofficial Candy Machine UI](https://github.com/MarkSackerberg/umi-cmv3-ui-inofficial). Thank you to Mark for the initial work that helped start this project.
+
 ## UI preview
 
 ### Mint page
@@ -163,6 +165,22 @@ The browser communicates with the same-origin `/api/rpc` proxy. Production origi
 
 Detailed deployment instructions are in [DEPLOYMENT.md](./DEPLOYMENT.md).
 
+## Support this project
+
+Core Mint UI includes an optional **Buy me a beer** function that adds a 0.0065 SOL support transfer to each mint transaction. Leaving it enabled helps fund continued maintenance:
+
+```env
+NEXT_PUBLIC_DEVELOPER_FEE_ENABLED=true
+```
+
+Operators remain in control and can disable it with `false`. The amount and recipient are fixed in [`utils/developerFee.ts`](./utils/developerFee.ts), and operators should disclose the fee to minters. Enforcing it against custom clients requires the server-side signer and an effective `thirdPartySigner` Guard for every mintable group.
+
+Direct tips are also welcome at the Solana address:
+
+```text
+E4jpuwa7ppY2hmF2RWcfYrQ2FAXfLeVwPVGZZJVq9sk5
+```
+
 ## Documentation
 
 - [CANDY_MACHINE_SETUP.md](./CANDY_MACHINE_SETUP.md) — collection, Candy Machine, Guard, items, signer, and audit setup
@@ -172,10 +190,10 @@ Detailed deployment instructions are in [DEPLOYMENT.md](./DEPLOYMENT.md).
 - [DEPLOYMENT.md](./DEPLOYMENT.md) — Vercel and production configuration
 - [SECURITY.md](./SECURITY.md) — threat model and operational security
 - [PRODUCTION_READINESS.md](./PRODUCTION_READINESS.md) — final release checklist
-- [PROVENANCE.md](./PROVENANCE.md) — project origin and licensing notice
+- [PROVENANCE.md](./PROVENANCE.md) — project origin, credits, and license status
 - [ASSET_PROVENANCE.md](./ASSET_PROVENANCE.md) — default artwork origin and generation prompts
 - [CONTRIBUTING.md](./CONTRIBUTING.md) — development and contribution requirements
 
-## Licensing notice
+## Credits and license status
 
-The historical upstream UI named in [PROVENANCE.md](./PROVENANCE.md) did not include an identifiable software license when reviewed. This repository is technically prepared for reuse, but public redistribution or commercial use must wait until the necessary rights are confirmed or the remaining derived portions are independently replaced. No license file is intentionally asserted here.
+This project builds on Mark Sackerberg's initial work, for which we are grateful. See [PROVENANCE.md](./PROVENANCE.md) for the complete attribution and current license status.
